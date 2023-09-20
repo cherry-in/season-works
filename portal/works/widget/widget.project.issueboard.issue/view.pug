@@ -1,0 +1,54 @@
+.issue-card.card.card-sm([ngClass]="color()")
+    .card-body.text-end.placeholder-glow(*ngIf="!issue")
+        .placeholder.col-9.mb-3
+        .placeholder.placeholder-xs.col-10
+        .placeholder.placeholder-xs.col-11
+        .placeholder.placeholder-xs.col-8
+
+    ng-container(*ngIf="issue")
+        .card-body.title-area
+            .d-flex
+                h3.card-title.mb-0([class.text-red]="issue.level > 1") 
+                    span {{ issue.title }}
+                .ms-auto
+                span.text-yellow(*ngIf="service.auth.session.id == issue.user_id")
+                    i.fa-solid.fa-tag
+                span.text-red.ml-2(*ngIf="issue.level > 1")
+                    i.fa-solid.fa-exclamation-circle(*ngIf="issue.level == 2")
+                    i.fa-solid.fa-bullhorn(*ngIf="issue.level == 3")
+        
+        .card-body.p-0(*ngIf="issue.process > 0", style="border-top: none; height: 2px;")
+            .progress.progressbg-progress
+                .progress-bar.bg-blue(style="width: {{issue.process}}%", role="progressbar", aria-valuenow="{{issue.process}}", aria-valuemin="0", aria-valuemax="100")
+                    span.visually-hidden 
+
+        .card-body.pt-0.pb-0(style="border-top: none;")
+            .mt-0.status-items
+                .row
+                    .col
+
+                    .col-auto.text-muted(*ngIf="issue.process > 0")
+                        .text-muted.mt-1
+                            i.ti.ti-progress-check.mr-2
+                            span {{ issue.process }}%
+
+                    .col-auto(*ngIf="issue.todo.length")
+                        .text-muted.mt-1
+                            i.fa-solid.fa-square-check.mr-2
+                            span {{project.display.todoStatus(issue.todo)}}
+                    
+                    .col-auto.text-muted(*ngIf="issue.planend")
+                        .text-muted.mt-1
+                            i.fa-solid.fa-hourglass-end.mr-2
+                            span {{ issue.planend.substring(0, 10) }}
+        
+        .card-body.pt-0(style="border-top: none; padding-bottom: 12px;")
+            ng-container(*ngIf="issue.todo.length > 0")
+                .divide-y-2.mt-3
+                    .d-flex(*ngFor="let todo of issue.todo")
+                        i.ti.ti-check.text-muted.mr-2([class.text-green]="todo.checked", [class.text-muted]="!todo.checked")
+                        span([class.text-decoration-line-through]="todo.checked", [class.text-muted]="todo.checked") {{todo.title}}
+
+        .card-footer.text-right.p-1(*ngIf="issue.worker.length > 0", [ngClass]="color()")
+            ng-container(*ngFor="let worker_id of issue.worker")
+                .btn.btn-sm.btn-white.mr-1(*ngIf="project.member.map[worker_id]") {{project.member.map[worker_id].name}}

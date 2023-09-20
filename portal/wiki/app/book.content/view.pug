@@ -1,0 +1,69 @@
+.wiki-container
+    .wiki-aside
+        wiz-portal-wiki-book-tree
+
+    .wiki-content
+        ng-container(*ngIf="wikibook.content.is('content')")
+            .tab-container
+                input.content-title.form-control.form-control-flush(placeholder="문서 제목을 입력해주세요", [(ngModel)]="wikibook.content.data().title", [disabled]="!wikibook.accessLevel(['admin', 'user'])")
+
+                ng-container(*ngIf="wikibook.content.data().id")
+                    .btn-group.area-round
+                        .btn([class.btn-blue]="is('default')", (click)="active('default')") 문서
+                        .btn([class.btn-blue]="is('graph')", (click)="active('graph')") 그래프
+            
+            .content-container(*ngIf="is('default')")
+                .editor-area.ck-fit-content.ck-editor-noborder.ck-editor-works.ck-editor-wiki
+                    textarea('#editor'='')
+            
+            .content-container(*ngIf="is('graph')")
+                .p-6.text-center 준비중입니다
+            
+        ng-container(*ngIf="wikibook.content.is('setting') && wikibook.accessLevel(['admin'])")
+            .tab-container.area-round
+                .ml-auto
+                .btn-group
+                    .btn([class.btn-blue]="is('default')", (click)="active('default')") 설정
+                    .btn([class.btn-blue]="is('access')", (click)="active('access')") 접근권한
+
+            .setting-container(*ngIf="is('default')")
+                wiz-portal-wiki-book-info
+            
+            .setting-container(*ngIf="is('access')")
+                wiz-portal-wiki-book-access
+
+    .wiki-bside
+        .side-content(*ngIf="wikibook.accessLevel(['admin', 'user'])")
+            .side-heading 문서 관리
+
+            button.btn.btn-blue.btn-block((click)="updateContent()")
+                span.spinner-border.spinner-border-sm.text-white.mr-2(*ngIf="isUpdate")
+                span 문서 {{ wikibook.content.data().id ? '업데이트' : '생성' }}
+                i.fas.fa-save.ml-2
+
+            ng-container(*ngIf="wikibook.content.data().id")
+                .mb-2
+                button.btn.btn-link.btn-block((click)="home()", *ngIf="wikibook.content.data().id != wikibook.data().home")
+                    span 대문글 지정
+
+        ng-container(*ngIf="wikibook.content.data().id && wikibook.accessLevel(['admin', 'user'])")
+            .side-content
+                .side-heading.d-flex.area-round
+                    span 리비전
+                    .ml-auto
+                    .btn.btn-dark.btn-sm.pl-2.pr-2((click)="commit()")
+                        span.mr-1.text-white 리비전 생성
+                        i.fa-solid.fa-circle-check
+
+                .revision-items
+                    .revision-item([class.active]="!revision_id")
+                        span.text-link((click)="loadRevision()") 최신문서
+                    .revision-item(*ngFor="let revision of wikibook.content.revisions()", [class.active]="revision.id == revision_id")
+                        span.text-link((click)="loadRevision(revision.id)") {{revision.created}}
+                        span.text-muted.ml-1 ({{revision.user.name}})
+
+            .side-content
+                .side-heading 문서 삭제
+                button.btn.btn-red.btn-block((click)="delete()")
+                    span 삭제하기
+                    i.fas.fa-trash.ml-2

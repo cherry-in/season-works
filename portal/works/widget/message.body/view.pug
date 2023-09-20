@@ -1,0 +1,45 @@
+.card-body([class.is-reply]="msg.parent_id")
+    .message-body
+        .message-header
+            .message-title(*ngIf="project.member.map[msg.user_id]")
+                i.mr-2.fa-solid.fa-reply(*ngIf="msg.parent_id")
+                span {{project.member.map[msg.user_id].name}}
+            .ml-auto
+            .ml-2
+            span.text-muted {{project.display.date(msg.created)}}
+            ng-container(*ngIf="!msg.parent_id")
+                .ml-2
+                span(*ngIf="cache.message.parent_id != msg.id")
+                    i.fa-solid.fa-reply((click)="event.replyMessage(msg)")
+                .ml-2
+                .favorite(*ngIf="msg.type != 'log'")
+                    i.fa-regular.fa-star((click)="event.favoriteMessage(msg)", *ngIf="msg.favorite == 0")
+                    i.text-yellow.fa-solid.fa-star((click)="event.favoriteMessage(msg)", *ngIf="msg.favorite == 1")
+        
+        .message-files(*ngIf="msg.attachment && msg.attachment.length > 0")
+            ng-container(*ngFor="let file of msg.attachment")
+                a.btn.btn-sm.btn-secondary([attr.href]="project.downloadUrl(file.id, file.filename)", target="_blank")
+                    i.fa-solid.fa-download.mr-2
+                    span {{file.filename}}
+
+        .message-text(*ngIf="msg.type == 'log'") {{msg.message}}
+        .message-text(*ngIf="msg.type != 'log'", [innerHtml]="project.display.markdown(msg.message)")
+
+.message-images.card-body.p-0.d-block(*ngIf="msg.images && msg.images.length > 0")
+    ng-container(*ngFor="let grid of event.imageGrid(msg)")
+        .row.p-0.m-0
+            ng-container(*ngFor="let image of grid.items")
+                .image-box.p-0.m-0([class]="grid.size")
+                    a.message-img([style.background-image]="image.load ? event.imageUrl(image) : ''", [attr.href]="project.downloadUrl(image.id, image.filename)", target="_blank")
+                        ng-container(*ngIf="grid.size == 'col-3'")
+                            svg(viewBox="0 0 100 100")
+                                rect(width="100", height="100", style="fill:rgba(255,255,255,0);")
+                        ng-container(*ngIf="grid.size == 'col-4'")
+                            svg(viewBox="0 0 100 70")
+                                rect(width="100", height="70", style="fill:rgba(255,255,255,0);")
+                        ng-container(*ngIf="grid.size == 'col-6'")
+                            svg(viewBox="0 0 100 50")
+                                rect(width="100", height="50", style="fill:rgba(255,255,255,0);")
+                        ng-container(*ngIf="grid.size == 'col-12'")
+                            svg(viewBox="0 0 100 50")
+                                rect(width="100", height="50", style="fill:rgba(255,255,255,0);")

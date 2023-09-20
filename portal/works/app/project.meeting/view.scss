@@ -1,0 +1,218 @@
+$sidebarsize: 260px;
+
+.container {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    padding: 0;
+
+    .card {
+        height: 100%;
+        overflow: hidden;
+        border-radius: 0;
+        border: none;
+
+        .card-body {
+            height: 100%;
+            overflow: hidden;
+            border-radius: 0;
+            border: none;
+        }
+    }
+}
+
+.sidebar {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    width: $sidebarsize;
+    border-right: 1px solid #ccc;
+    position: relative;
+    z-index: 100;
+    flex-direction: column;
+
+    .sidebar-header {
+        padding: 16px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .sidebar-footer {
+        width: 260px;
+        position: absolute;
+        bottom: 0;
+    }
+
+    .sidebar-content {
+        flex: 1;
+        overflow: hidden;
+
+        .sidebar-content-scroll {
+            height: 100%;
+            overflow: auto;
+            padding-bottom: 120px;
+        }
+
+        td {
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        h4 {
+            font-size: 15px;
+        }
+
+        span.text-muted {
+            font-size: 12px;
+            padding: 0;
+        }
+
+        .active {
+            background: var(--wc-blue-light);
+            color: #354052;
+        }
+    }
+
+    .sidebar-search {
+        .form-control {
+            border-radius: 0;
+            border: none;
+            outline: none;
+
+            &:focus {
+                outline: none;
+                box-shadow: none;
+            }
+        }
+
+        .btn {
+            border: none;
+        }
+
+        border-bottom: 1px solid var(--wc-border);
+    }
+}
+
+.context-area {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 0;
+    left: 0;
+    padding-left: $sidebarsize;
+    height: 100%;
+    width: 100%;
+
+    .meetinfo {
+        height: 80px;
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+
+        .meet-title {
+            flex: 1;
+        }
+
+        .meet-date {
+            padding: 0 12px;
+        }
+
+        input {
+            height: 23px;
+        }
+    }
+
+    .attachment-container {
+        border-top: 1px solid var(--wc-border);
+
+        .btn-group {
+            margin-right: 4px;
+        }
+    }
+
+    .editor-area {
+        border-top: 3px solid var(--wc-blue);
+        flex: auto;
+        height: calc(100% - 80px);
+    }
+}
+
+.fab-area {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+
+    .btn {
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+
+        i {
+            font-size: 18px;
+        }
+    }
+}
+
+table {
+    tr:first-child {
+        td {
+            border-top: none;
+        }
+    }
+}
+
+
+.form-select-flush {
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+}
+
+.meet-back {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        max-width: none;
+    }
+
+    .context-area {
+        padding: 0;
+
+        .meetinfo {
+            height: auto;
+            display: block;
+            padding: 8px 12px;
+
+            >div {
+                padding: 0 !important;
+                display: flex;
+
+                .form-label {
+                    font-family: 'main-eb';
+                    width: 120px;
+                }
+            }
+
+            .meet-back {
+                display: block;
+                padding-bottom: 8px !important;
+            }
+        }
+    }
+
+    .tab-list {
+        .context-area {
+            display: none;
+        }
+    }
+
+    .tab-item {
+        .sidebar {
+            display: none;
+        }
+    }
+}

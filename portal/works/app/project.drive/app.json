@@ -1,0 +1,21 @@
+{
+    "mode": "portal",
+    "type": "app",
+    "id": "project.drive",
+    "title": "project/drive",
+    "namespace": "project.drive",
+    "viewuri": "",
+    "category": "project",
+    "controller": "base",
+    "template": "wiz-portal-works-project-drive()",
+    "ng.build": {
+        "id": "portal.works.project.drive",
+        "name": "PortalWorksProjectDriveComponent",
+        "path": "./portal.works.project.drive/portal.works.project.drive.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-works-project-drive",
+        "inputs": [],
+        "outputs": []
+    }
+}

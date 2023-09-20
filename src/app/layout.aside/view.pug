@@ -1,0 +1,11 @@
+.wiz-page
+    wiz-component-nav-aside
+
+    .wiz-content
+        .wiz-view
+            router-outlet
+
+wiz-portal-season-alert
+.loading-zone(*ngIf="service.auth.status === null || service.loading.isshow")
+    .loading-zone-container
+        wiz-portal-season-loading-season([height]="48")

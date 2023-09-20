@@ -1,0 +1,136 @@
+.wiki-container {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    background: #fff;
+
+    .wiki-aside {
+        display: flex;
+        flex-direction: column;
+        width: 320px;
+        border-left: 1px solid var(--wc-border);
+        border-right: 1px solid var(--wc-border);
+        height: 100%;
+        overflow: auto;
+    }
+
+    .wiki-bside {
+        display: flex;
+        flex-direction: column;
+        width: 320px;
+        border-right: 1px solid var(--wc-border);
+        height: 100%;
+        overflow: auto;
+
+        .action-btns {
+            padding: 8px;
+            text-align: right;
+
+            button {
+                margin: 4px;
+                border-radius: 50%;
+                width: 48px;
+                height: 48px;
+            }
+        }
+
+        .side-content {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--wc-border);
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            .side-heading {
+                font-family: 'main-eb';
+                font-size: 16px;
+                margin-bottom: 12px;
+
+                i {
+                    cursor: pointer;
+
+                    &:hover {
+                        color: var(--wc-blue);
+                    }
+                }
+            }
+        }
+    }
+
+    .wiki-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        border-right: 1px solid var(--wc-border);
+        height: 100%;
+        overflow: hidden;
+
+        .tab-container {
+            width: 100%;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--wc-border);
+            padding: 0 12px;
+
+            .content-title {
+                flex: auto;
+                font-size: 16px;
+                font-family: 'main-eb';
+                text-align: left;
+            }
+
+            .btn {
+                min-width: 80px;
+            }
+        }
+
+        .content-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+
+            .editor-area {
+                height: 100%;
+            }
+
+            .actions {
+                position: absolute;
+                bottom: 24px;
+                right: 24px;
+                z-index: 9999;
+
+                .btn {
+                    border-radius: 50%;
+                    width: 56px;
+                    height: 56px;
+                    margin-top: 12px;
+
+                    i {
+                        font-size: 18px;
+                    }
+                }
+            }
+        }
+
+        .setting-container {
+            flex: 1;
+            overflow: auto;
+            background-color: var(--wc-blue-light);
+        }
+    }
+}
+
+.text-link {
+    color: #206bc4;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.revision-item.active {
+    background-color: var(--wc-blue-light);
+}

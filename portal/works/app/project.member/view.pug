@@ -1,0 +1,48 @@
+.card
+    .card-body(*ngIf="!readOnly")
+        .row
+            .col-md-6
+                label.form-label 사용자 이메일
+                input.form-control([(ngModel)]="newuser.email", placeholder="user@season.co.kr", (keyup.enter)="create()")
+            .col-md-3
+                label.form-label 권한
+                select.form-select([(ngModel)]="newuser.role")
+                    option(value='admin', *ngIf="project.accessLevel(['admin'])") 관리자
+                    option(value='manager', *ngIf="project.accessLevel(['admin'])") 매니저
+                    option(value='user') 구성원
+                    option(value='guest') 손님
+            .col-md-3
+                label.form-label &nbsp;
+                .btn.btn-block.btn-blue((click)="create()") 추가
+
+    .table-responsive
+        table.table.table-vcenter.table-nowrap.card-table
+            thead
+                tr
+                    th 구성원
+                    th.w-1 참가일
+                    th.w-1 권한
+                    th.w-1.area-round.text-right(*ngIf="!readOnly")
+
+            tbody
+                ng-container(*ngFor="let user of project.member.list()")
+                    tr
+                        td(*ngIf="user.meta.email")
+                            div 
+                                span {{user.meta.name}}
+                                span.ml-2.badge.badge-sm.bg-warning(*ngIf="service.auth.session.id == user.meta.id") It's Me!
+                            small.text-muted {{user.meta.email}}
+                        td(*ngIf="!user.meta.email")
+                            div {{user.user}}
+                            small.text-muted 아직 시즌웍스에 가입되지 않은 사용자입니다
+                        td.text-muted {{user.created.substring(0, 10)}}
+                        td
+                            select.form-select([(ngModel)]="user.role", style="width: 96px;", (change)="roleChanged(user)", [disabled]="readOnly || service.auth.session.id == user.meta.id || (project.accessLevel(['manager']) && ['admin', 'manager'].includes(user.role))")
+                                option(value='admin', [disabled]="!project.accessLevel(['admin'])") 관리자
+                                option(value='manager', [disabled]="!project.accessLevel(['admin'])") 매니저
+                                option(value='user') 구성원
+                                option(value='guest') 손님
+
+                        td.w-1.area-round.text-right(*ngIf="!readOnly")
+                            .btn.btn-red(*ngIf="service.auth.session.id != user.meta.id && !(project.accessLevel(['manager']) && ['admin', 'manager'].includes(user.role))", (click)="remove(user)")
+                                i.fa-solid.fa-xmark

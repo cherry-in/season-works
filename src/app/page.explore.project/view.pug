@@ -1,0 +1,121 @@
+.container
+    .row                        
+        .col-md-9.p-4
+            .row.row-cards
+                .space-y
+                    .card(*ngIf="!loaded")
+                        .card-body.text-end.placeholder-glow
+                            .placeholder.col-9.mb-3
+                            .placeholder.placeholder-xs.col-10
+                            .placeholder.placeholder-xs.col-11
+                            .placeholder.placeholder-xs.col-8
+
+                    .card.card-hover(*ngIf="list.length == 0 && loaded")
+                        .empty
+                            .empty-img
+                                img(src="/assets/portal/works/work.svg")
+                            p.empty-title 검색된 프로젝트가 없습니다
+                            p.empty-subtitle.text-muted(*ngIf="service.auth.show.membership(['admin', 'staff', 'user'])") 아래 시작하기 버튼을 눌러서 프로젝트를 시작해주세요.
+                            .empty-action(*ngIf="service.auth.show.membership(['admin', 'staff', 'user'])")
+                                a.btn.btn-blue((click)="createProject()")
+                                    span 시작하기
+                                    i.fa-solid.fa-person-running.ml-2
+
+                    ng-container(*ngFor="let item of list")
+                        .card.card-hover([routerLink]="'/project/' + item.namespace")
+                            .row.g-0
+                                .col-auto
+                                    .card-body
+                                        .avatar.avatar-md(style='background-image: url({{item.icon}})')
+                                .col
+                                    .card-body.ps-0
+                                        .row
+                                            .col
+                                                h3.mb-0
+                                                    a {{item.title}}
+                                        .row
+                                            .col-md
+                                                .mt-2.list-inline.list-inline-dots.mb-0.text-muted
+                                                    .list-inline-item
+                                                        i.ti.ti-hash.mr-1
+                                                        span {{item.short}}
+                                                    
+                                                    .list-inline-item
+                                                        i.ti.ti-alarm.mr-1
+                                                        span {{displayDate(item.start)}}
+                                                        ng-container(*ngIf="item.end")
+                                                            i.ti.ti-arrow-narrow-right.mr-1.ml-1
+                                                            span {{displayDate(item.end)}}            
+                                                    .list-inline-item
+                                                        i.ti.ti-rotate-clockwise-2.mr-1
+                                                        span {{displayDate(item.updated)}}
+
+                                                    .list-inline-item(*ngIf="item.untrack")
+                                                        i.ti.ti-ban.mr-1
+                                                        span 추적하지 않음
+
+            .mt-4.mb-4
+                wiz-portal-season-pagenation(
+                    [current]="search.page", 
+                    [start]="pagenation.start", 
+                    [end]="pagenation.end", 
+                    (pageMove)="load($event)")
+
+        .col-md-3.container-menu
+            .sticky-top.pt-4.pb-4
+                .btn.btn-blue.btn-block.mb-3((click)="createProject()", *ngIf="service.auth.show.membership(['admin', 'staff', 'user'])")
+                    i.ti.ti-plus.mr-2
+                    span 새 프로젝트
+
+                .form-label 프로젝트명
+                .mb-4
+                    input.form-control(placeholder="검색어를 입력해주세요", [(ngModel)]="search.text", (keyup.enter)="load()")
+                
+                .form-label 프로젝트 범위
+                .mb-4
+                    label.form-check
+                        input.form-check-input(type='radio', name='project-range', value='join', [(ngModel)]="search.range", (change)="load()")
+                        span.form-check-label 참여 프로젝트
+                    label.form-check(*ngIf="service.auth.show.membership(['admin', 'staff', 'user'])")
+                        input.form-check-input(type='radio', name='project-range', value='manage', [(ngModel)]="search.range", (change)="load()")
+                        span.form-check-label 내 프로젝트
+                    label.form-check
+                        input.form-check-input(type='radio', name='project-range', value='all', [(ngModel)]="search.range", (change)="load()")
+                        span.form-check-label 전체 프로젝트
+                    
+                .form-label 프로젝트 상태
+                .mb-4
+                    label.form-check
+                        input.form-check-input(type='radio', name='project-status', value='open', [(ngModel)]="search.status", (change)="load()")
+                        span.form-check-label 진행중인 프로젝트
+                    label.form-check
+                        input.form-check-input(type='radio', name='project-status', value='close', [(ngModel)]="search.status", (change)="load()")
+                        span.form-check-label 종료된 프로젝트
+                
+                .form-label 프로젝트 정렬
+                .mb-4
+                    label.form-check
+                        input.form-check-input(type='radio', name='project-sort', value='updated', [(ngModel)]="search.sort", (change)="load()")
+                        span.form-check-label 업데이트순
+                    label.form-check
+                        input.form-check-input(type='radio', name='project-sort', value='title', [(ngModel)]="search.sort", (change)="load()")
+                        span.form-check-label 제목순
+
+.wiz-modal(*ngIf="newProject")
+    .modal
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header.p-3
+                    h3.modal-title 새 프로젝트
+                    .ml-auto
+                    .text-dark.close-btn((click)="closeCreateProjectModal()")
+                        i.fa-solid.fa-xmark
+            
+                .modal-body
+                    wiz-portal-works-project-info([hasSaveBtn]="false", [config]="config")
+                
+                .modal-footer.d-flex
+                    .btn.btn-white((click)="closeCreateProjectModal()") 닫기
+                    .ml-auto
+                    .btn.btn-blue((click)="updateCreateProject()") 시작하기
+

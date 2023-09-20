@@ -1,0 +1,20 @@
+{
+    "mode": "component",
+    "id": "component.nav.aside",
+    "title": "Aside",
+    "namespace": "nav.aside",
+    "viewuri": "",
+    "category": "nav",
+    "controller": "",
+    "ng.build": {
+        "id": "component.nav.aside",
+        "name": "ComponentNavAsideComponent",
+        "path": "./component.nav.aside/component.nav.aside.component"
+    },
+    "ng": {
+        "selector": "wiz-component-nav-aside",
+        "inputs": [],
+        "outputs": []
+    },
+    "template": "wiz-component-nav-aside()"
+}

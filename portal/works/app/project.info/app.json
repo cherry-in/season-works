@@ -1,0 +1,24 @@
+{
+    "mode": "portal",
+    "id": "project.info",
+    "title": "project/info",
+    "namespace": "project.info",
+    "viewuri": "",
+    "category": "project",
+    "controller": "base",
+    "type": "app",
+    "template": "wiz-portal-works-project-info([hasSaveBtn]=\"\", [config]=\"\")",
+    "ng.build": {
+        "id": "portal.works.project.info",
+        "name": "PortalWorksProjectInfoComponent",
+        "path": "./portal.works.project.info/portal.works.project.info.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-works-project-info",
+        "inputs": [
+            "hasSaveBtn",
+            "config"
+        ],
+        "outputs": []
+    }
+}

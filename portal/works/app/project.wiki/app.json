@@ -1,0 +1,21 @@
+{
+    "mode": "portal",
+    "type": "app",
+    "id": "project.wiki",
+    "title": "project/wiki",
+    "namespace": "project.wiki",
+    "viewuri": "",
+    "category": "project",
+    "controller": "base",
+    "template": "wiz-portal-works-project-wiki()",
+    "ng.build": {
+        "id": "portal.works.project.wiki",
+        "name": "PortalWorksProjectWikiComponent",
+        "path": "./portal.works.project.wiki/portal.works.project.wiki.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-works-project-wiki",
+        "inputs": [],
+        "outputs": []
+    }
+}

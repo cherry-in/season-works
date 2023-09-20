@@ -1,0 +1,159 @@
+.ck-editor-noborder {
+    .ck-editor__editable_inline {
+        padding: 16px 32px !important;
+
+        &:focus {
+            outline: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    }
+
+    .ck-restricted-editing_mode_standard {
+        border: none !important;
+    }
+
+    .ck-toolbar {
+        border: none !important;
+    }
+}
+
+.works-project-info {
+    .ck-editor__editable_inline {
+        max-height: 560px;
+        height: 70vh;
+        padding: 16px 32px !important;
+
+        &:focus {
+            outline: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    }
+}
+
+.ck-fit-content {
+    .ck.ck-editor {
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    .ck-editor__main {
+        display: contents;
+    }
+
+    .ck-editor__editable_inline {
+        height: 100%;
+        padding: 16px 32px !important;
+        padding-bottom: 192px !important;
+
+        &:focus {
+            outline: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    }
+}
+
+.ck-editor-small {
+    .ck-editor__editable_inline {
+        min-height: 120px;
+        max-height: 40vh;
+    }
+}
+
+.ck-editor-auto {
+    .ck-editor__editable_inline {
+        min-height: 120px;
+        max-height: fit-content !important;
+    }
+}
+
+.ck-editor-works {
+    textarea {
+        display: none;
+    }
+}
+
+.ck-editor-docs {
+    .ck-editor__main {
+        display: block;
+        overflow: auto;
+    }
+
+    .ck-content {
+        overflow: hidden !important;
+        height: auto;
+        max-width: 820px;
+        padding: 0 40px;
+    }
+}
+
+.message-input {
+    .ck-editor__editable_inline {
+        height: 180px;
+
+        @media (max-height: 1024px) {
+            height: 120px;
+        }
+    }
+}
+
+.message-text>*:last-child {
+    margin-bottom: 0 !important;
+}
+
+code {
+    padding: 0;
+}
+
+.ck-content {
+    h1 {
+        margin-top: 32px !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    h2 {
+        margin-top: 32px !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 1.5rem !important;
+        border-bottom: 1px solid #dee2e6 !important;
+    }
+
+    hr {
+        // margin: 32px 0 !important;
+        background: #dee2e6 !important;
+        opacity: 0.6;
+    }
+
+    .image-inline,
+    img {
+        display: block !important;
+        margin: 24px auto !important;
+    }
+
+    table {
+        td {
+            text-align: left;
+        }
+    }
+}
+
+.badge {
+    color: #fff;
+}
+
+.message-text {
+    word-break: break-all;
+
+    pre,
+    code,
+    pre code {
+        width: 100%;
+        overflow: auto;
+        // word-break: break-all !important;
+        // white-space: break-spaces !important;
+    }
+}

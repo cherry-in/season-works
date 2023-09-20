@@ -1,0 +1,8 @@
+{
+    "id": "project",
+    "title": "/api/works/project/<path:path>",
+    "route": "/api/works/project/<path:path>",
+    "viewuri": "",
+    "category": "issueboard",
+    "controller": "base"
+}

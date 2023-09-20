@@ -1,0 +1,21 @@
+{
+    "mode": "portal",
+    "id": "project.issueboard",
+    "title": "project/issueboard",
+    "namespace": "project.issueboard",
+    "viewuri": "",
+    "category": "project",
+    "controller": "base",
+    "type": "app",
+    "template": "wiz-portal-works-project-issueboard()",
+    "ng.build": {
+        "id": "portal.works.project.issueboard",
+        "name": "PortalWorksProjectIssueboardComponent",
+        "path": "./portal.works.project.issueboard/portal.works.project.issueboard.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-works-project-issueboard",
+        "inputs": [],
+        "outputs": []
+    }
+}

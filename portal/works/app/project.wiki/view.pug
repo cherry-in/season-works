@@ -1,0 +1,122 @@
+.wiki-container
+    .row.m-0.p-0
+        .col-md-3
+            .sticky-top.pt-4.pb-4
+                .d-flex.mb-3
+                    .btn.btn-blue.btn-block((click)="createProject()", *ngIf="service.auth.show.membership(['admin', 'staff', 'user']) && project.accessLevel(['admin', 'manager'])")
+                        i.ti.ti-plus.mr-2
+                        span 새 위키 만들기
+                    
+                    .btn.btn-link.btn-block((click)="connectWiki()", *ngIf="service.auth.show.membership(['admin', 'staff', 'user']) && project.accessLevel(['admin', 'manager'])")
+                        span 위키 연결
+
+                .mb-4
+                    input.form-control(placeholder="검색어를 입력해주세요", [(ngModel)]="search.text", (keyup.enter)="load()")
+
+        .col-md-9.p-4
+            .row.row-cards
+                .space-y
+                    .card(*ngIf="!loaded")
+                        .card-body.text-end.placeholder-glow
+                            .placeholder.col-9.mb-3
+                            .placeholder.placeholder-xs.col-10
+                            .placeholder.placeholder-xs.col-11
+                            .placeholder.placeholder-xs.col-8
+
+                    .card.card-hover(*ngIf="list.length == 0 && loaded")
+                        .empty
+                            .empty-img
+                                img(src="/assets/portal/works/work.svg")
+                            p.empty-title 검색된 위키가 없습니다
+                            p.empty-subtitle.text-muted(*ngIf="service.auth.show.membership(['admin', 'staff', 'user'])") 아래 시작하기 버튼을 눌러서 위키를 시작해주세요.
+                            .empty-action(*ngIf="service.auth.show.membership(['admin', 'staff', 'user'])")
+                                a.btn.btn-blue((click)="createProject()")
+                                    span 시작하기
+                                    i.fa-solid.fa-person-running.ml-2
+
+                    ng-container(*ngFor="let item of list")
+                        .card.card-hover((click)="open(item)")
+                            .row.g-0
+                                .col-auto
+                                    .card-body
+                                        .avatar.avatar-md(style='background-image: url({{item.icon}})')
+                                .col
+                                    .card-body.ps-0
+                                        .row
+                                            .col
+                                                h3.mb-0
+                                                    a {{item.title}}
+                                        .row
+                                            .col-md
+                                                .mt-2.list-inline.list-inline-dots.mb-0.text-muted
+                                                    .list-inline-item
+                                                        i.ti.ti-rotate-clockwise-2.mr-1
+                                                        span {{displayDate(item.updated)}}
+
+            .mt-4.mb-4
+                wiz-portal-season-pagenation(
+                    [current]="search.page", 
+                    [start]="pagenation.start", 
+                    [end]="pagenation.end", 
+                    (pageMove)="load($event)")
+
+.wiz-modal(*ngIf="isConnectWiki")
+    .modal
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header.p-3
+                    h3.modal-title 위키 연결
+                    .ml-auto
+                    .text-dark.close-btn((click)="closeConnectWikiModal()")
+                        i.fa-solid.fa-xmark
+            
+                .modal-body.p-4.bg-blue-lt
+                    ng-container(*ngFor="let item of wiki.list")
+                        .card.card-hover.mb-3((click)="selectConnectWiki(item)", [class.active]="wiki.selected ? item.id == wiki.selected.id : false")
+                            .row.g-0
+                                .col-auto
+                                    .card-body
+                                        .avatar.avatar-md(style='background-image: url({{item.icon}})')
+                                .col
+                                    .card-body.ps-0
+                                        .row
+                                            .col
+                                                h3.mb-0
+                                                    a {{item.title}}
+                                        .row
+                                            .col-md
+                                                .mt-2.list-inline.list-inline-dots.mb-0.text-muted
+                                                    .list-inline-item
+                                                        i.ti.ti-rotate-clockwise-2.mr-1
+                                                        span {{displayDate(item.updated)}}
+
+                    wiz-portal-season-pagenation(
+                        [current]="wiki.search.page", 
+                        [start]="wiki.pagenation.start", 
+                        [end]="wiki.pagenation.end", 
+                        (pageMove)="loadWiki($event)")
+
+                .modal-footer.d-flex.pt-1.pb-1
+                    .btn.btn-white((click)="closeConnectWikiModal()") 닫기
+                    .ml-auto
+                    .btn.btn-blue((click)="connectWiki()", *ngIf="wiki.selected") 연결하기
+                    .btn.btn-link(*ngIf="!wiki.selected") 연결할 위키를 선택해주세요
+
+.wiz-modal(*ngIf="newProject")
+    .modal
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header.p-3
+                    h3.modal-title 새로운 위키
+                    .ml-auto
+                    .text-dark.close-btn((click)="closeCreateBookModal()")
+                        i.fa-solid.fa-xmark
+            
+                .modal-body
+                    wiz-portal-wiki-book-info([hasSaveBtn]="false")
+                
+                .modal-footer.d-flex
+                    .btn.btn-white((click)="closeCreateBookModal()") 닫기
+                    .ml-auto
+                    .btn.btn-blue((click)="createBook()") 시작하기
+

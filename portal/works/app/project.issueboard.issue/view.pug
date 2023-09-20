@@ -1,0 +1,276 @@
+.view-container(*ngIf="cache.loaded", [class.editor-unloaded]="!cache.editorLoaded", [class.wiz-modal]="issue.modal", [class.embeded]="!issue.modal")
+    .view-main([class.modal]="issue.modal")
+        .view-body([class.modal-dialog]="issue.modal", role='document', [class.is-new]="issue.id == 'new'")
+            .view-content([class.modal-content]="issue.modal", '#body'='')
+                .modal-header.p-3
+                    input.form-control.form-control-flush([(ngModel)]="data.info.title", placeholder="이슈 제목을 입력해주세요", [disabled]="!isRole(['owner', 'manager'])")
+                    .ml-auto
+                    .btn.btn-blue.mr-4((click)="update()", *ngIf="!readOnly && isRole(['owner', 'manager'])")
+                        span 저장하기
+                        span.spinner-border.spinner-border-sm.text-white.ml-2(*ngIf="cache.isUpdate")
+
+                    .text-dark.close-btn.mr-3.movable-btn((mousedown)="onStartMoving($event)", (mouseup)="onStopMoving($event)", *ngIf="isMovable")
+                        i.fa-solid.fa-up-down-left-right
+
+                    .text-dark.close-btn((click)="hide()")
+                        i.fa-solid.fa-xmark
+                
+                .issue-tabs
+                    a.card-btn((click)="switchTab('info')", [class.active]="cache.tab == 'info'")
+                        span 작업정보
+                        i.fa-brands.fa-readme.ml-3
+                    
+                    a.card-btn((click)="switchTab('message')", [class.active]="cache.tab == 'message'")
+                        span 메시지
+                        i.fa-solid.fa-message.ml-3
+
+                .row.m-0.p-0.issue-container
+                    .m-0.p-0.issue-info([class.col-md-7]="issue.id != 'new'", [class.col-md-12]="issue.id == 'new'", [class.show]="cache.tab == 'info'")
+                        .info-options
+                            .info-content
+                                span.badge.bg-secondary 이슈제목
+                                .info-value(style="flex: auto;")
+                                    input.form-control.form-control-sm.d-block(type="text", [(ngModel)]="data.info.title", [disabled]="!isRole(['owner', 'manager'])", placeholder="이슈 제목을 입력해주세요")
+                            
+                            .info-content
+                                span.badge.bg-secondary 프로젝트
+                                .info-value
+                                    a(routerLink="/project/{{project.data().namespace}}/issueboard") {{project.data().title}}
+
+                            .info-content(*ngIf="project.member.map[data.info.user_id]")
+                                span.badge.bg-secondary 요청자
+                                .info-value
+                                    span.mr-1 {{project.member.map[data.info.user_id].name}}
+                                    small.text-muted ({{project.member.map[data.info.user_id].email}})
+                            
+                            .info-content
+                                span.badge.bg-secondary 작업자
+                                .info-value
+                                    ng-continaer(*ngFor="let worker of data.info.worker")
+                                        .btn.btn-sm.btn-white.mr-2((click)="removeMember(worker)", *ngIf="project.member.map[worker]")
+                                            span {{project.member.map[worker].name}}
+                                            i.fas.fa-times.ml-1(*ngIf="!readOnly && isRole(['owner', 'manager'])")
+
+                                    .dropdown.dropdown-popup(*ngIf="!readOnly && isRole(['owner', 'manager'])")
+                                        a.btn.btn-sm.btn-white((click)="selectMember()")
+                                            i.fas.fa-plus.mr-1
+                                            span 작업자 추가
+                                        
+                                        .dropdown-menu.dropdown-menu-arrow.bg-dark.text-white(*ngIf="cache.worker")
+                                            .dropdown-item
+                                                input.form-control.form-control-sm.bg-dark.form-control-rounded(placeholder="사용자 추가", [(ngModel)]="cache.searchMember")
+                                            ng-container(*ngFor="let member of project.member.list()")
+                                                a.dropdown-item.cursor-pointer(*ngIf="searchMember(member, cache.searchMember)", (click)="addMember(member.meta.id)")
+                                                    span {{member.meta.name}}
+                            
+                            .info-content
+                                span.badge.bg-secondary 시작일
+                                .info-value
+                                    input.form-control.form-control-sm.issue-datepicker(type="date", [(ngModel)]="data.info.planstart", [disabled]="!isRole(['owner', 'manager'])")
+                                
+                            .info-content
+                                span.badge.bg-secondary 종료일
+                                .info-value
+                                    input.form-control.form-control-sm.issue-datepicker(type="date", [(ngModel)]="data.info.planend", [disabled]="!isRole(['owner', 'manager'])")
+
+                            .info-content
+                                span.badge.bg-secondary 우선순위
+                                .info-value
+                                    .form-selectgroup.form-selectgroup-sm
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="level", value=0, [(ngModel)]="data.info.level", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                i.fas.fa-dot-circle.mr-1
+                                                span 낮음
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="level", value=1, [(ngModel)]="data.info.level", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                i.fas.fa-circle.mr-1
+                                                span 중간
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="level", value=2, [(ngModel)]="data.info.level", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                i.fas.fa-exclamation-circle.mr-1
+                                                span 중요
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="level", value=3, [(ngModel)]="data.info.level", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                i.fas.fa-bullhorn.mr-1
+                                                span 긴급
+
+                            .info-content
+                                span.badge.bg-secondary 진행상태
+                                .info-value
+                                    .form-selectgroup.form-selectgroup-sm
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="status", value='noti', [(ngModel)]="data.info.status", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                i.fas.fa-bell.mr-1
+                                                span 공지/알림
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="status", value='open', [(ngModel)]="data.info.status", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                i.fas.fa-hourglass-start.mr-1
+                                                span 시작되지 않음
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="status", value='work', [(ngModel)]="data.info.status", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                i.fas.fa-hourglass-half.mr-1
+                                                span 진행
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="status", value='finish', [(ngModel)]="data.info.status", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                i.fas.fa-hourglass-end.mr-1
+                                                span 완료
+                                        label.form-selectgroup-item(*ngIf="isRole(['owner'])")
+                                            input.form-selectgroup-input(type="radio", name="status", value='close', [(ngModel)]="data.info.status", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                i.fa-solid.fa-circle-check.mr-1
+                                                span 종료
+                                        label.form-selectgroup-item(*ngIf="isRole(['owner'])")
+                                            input.form-selectgroup-input(type="radio", name="status", value='cancel', [(ngModel)]="data.info.status", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                i.fas.fa-calendar-times.mr-1
+                                                span 취소
+                            
+                            .info-content
+                                span.badge.bg-secondary 진행률
+                                .info-value
+                                    .form-selectgroup.form-selectgroup-sm
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="process", value=0, [(ngModel)]="data.info.process", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                span 0%
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="process", value=20, [(ngModel)]="data.info.process", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                span 20%
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="process", value=40, [(ngModel)]="data.info.process", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                span 40%
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="process", value=60, [(ngModel)]="data.info.process", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                span 60%
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="process", value=80, [(ngModel)]="data.info.process", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                span 80%
+                                        label.form-selectgroup-item
+                                            input.form-selectgroup-input(type="radio", name="process", value=100, [(ngModel)]="data.info.process", [disabled]="!isRole(['owner', 'manager'])")
+                                            span.form-selectgroup-label
+                                                span 100%
+                                
+                            .info-content(*ngIf="data.info.todo.length > 0 || isRole(['owner', 'manager'])")
+                                span.badge.bg-secondary TODO
+                                .info-todo
+                                    .card
+                                        .card-body.p-2
+                                            ng-container(*ngIf="data.info.todo.length > 0")
+                                                .divide-y-2([sortablejs]="data.info.todo", [sortablejsOptions]="config.todoSorted")
+                                                    .d-flex(*ngFor="let todo of data.info.todo")
+                                                        i.ti.ti-check.text-muted.mr-2([class.text-green]="todo.checked", [class.text-muted]="!todo.checked", (click)="checkTodo(todo)")
+                                                        span([class.text-decoration-line-through]="todo.checked", [class.text-muted]="todo.checked") {{todo.title}}
+                                                        .ml-auto
+                                                        .actions(*ngIf="!readOnly")
+                                                            .action-btn.text-red((click)="removeTodo(todo)")
+                                                                i.fa-solid.fa-xmark
+                                            .d-flex(*ngIf="data.info.todo.length < 5 && isRole(['owner', 'manager'])")
+                                                input.form-control.form-control-flush([(ngModel)]="cache.todoText", placeholder="TODO 내용을 입력해주세요", (keyup.enter)="addTodo(cache.todoText)")
+                                                button.btn.btn-sm.btn-blue.pr-3.pl-3((click)="addTodo(cache.todoText)")
+                                                    i.fa-solid.fa-plus
+
+                            .info-content.d-block
+                                span.badge.bg-secondary.d-inline-block.mb-3 설명
+                                .info-value.ck-editor-auto.ck-editor-works.d-block.w-100
+                                    textarea('#description'='', [attr.namespace]="NAMESPACE")
+                            
+                    .col-md-5.m-0.p-0.issue-message(*ngIf="issue.id != 'new'", [class.show]="cache.tab == 'message'")
+                        .message-tab
+                            .card-btn([class.active]="cache.messageTab == 'message'", (click)="initMessage('message')")
+                                span 메시지
+                            .card-btn([class.active]="cache.messageTab == 'log'", (click)="initMessage('log')")
+                                span 작업이력
+                            .card-btn([class.active]="cache.messageTab == 'favorite'", (click)="initMessage('favorite')")
+                                span 중요메시지
+                            .card-btn([class.active]="cache.messageTab == 'file'", (click)="initMessage('file')")
+                                span 파일
+                        
+                        .message-content
+                            .message-list
+                                ng-container(*ngIf="cache.newMessage")
+                                    .alert-new-message((click)="unreadMessage(true)") 새로운 메시지가 있습니다
+                                
+                                .message-container('#messages'='', (scroll)="onScrollMessage()")
+                                    ng-container(*ngIf="data.messages.length > 0")
+                                        .alert-last-message(*ngIf="cache.isLastMessage") 모든 메시지를 확인하였습니다
+                                        .mt-5.mb-4(*ngIf="!cache.isLastMessage")
+                                    
+                                    .alert-last-message(*ngIf="data.messages.length > 0 && cache.loadMessage") 메시지를 불러오고 있습니다
+
+                                    ng-container(*ngIf="data.messages.length == 0 && cache.isLastMessage")
+                                        .alert-last-message(*ngIf="cache.messageTab == 'message'") 메시지가 없습니다
+                                        .alert-last-message(*ngIf="cache.messageTab == 'log'") 작업이력이 없습니다
+                                        .alert-last-message(*ngIf="cache.messageTab == 'favorite'") 중요메시지가 없습니다
+                                        .alert-last-message(*ngIf="cache.messageTab == 'file'") 파일이 없습니다
+
+                                    ng-container(*ngFor="let msg of data.messages")
+                                        .message-context([class.its-me]="service.auth.session.id == msg.user_id", [class.reply-target]="cache.message.parent_id == msg.id")
+                                            .mr-2(*ngIf="service.auth.session.id != msg.user_id")
+                                                .avatar.bg-yellow.text-white(style='background-image: url({{project.member.map[msg.user_id].profile_image}})', *ngIf="msg.type == 'message' || msg.type == 'file'")
+                                                    b(*ngIf="!project.member.map[msg.user_id].profile_image") {{project.member.map[msg.user_id].name[0]}}
+                                                .avatar(*ngIf="msg.type == 'log'")
+                                                    i.fa-solid.fa-history
+
+                                            .card.message-card
+                                                wiz-portal-works-message-body([event]="messageEvent", [project]="project", [msg]="msg", [cache]="cache")
+                                                
+                                                ng-container(*ngFor="let reply of msg.reply")
+                                                    wiz-portal-works-message-body([event]="messageEvent", [project]="project", [msg]="reply", [cache]="cache")
+
+                                            .ml-2(*ngIf="service.auth.session.id == msg.user_id")
+                                                .avatar.bg-yellow.text-white(style='background-image: url({{project.member.map[msg.user_id].profile_image}})', *ngIf="msg.type == 'message' || msg.type == 'file'")
+                                                    b(*ngIf="!project.member.map[msg.user_id].profile_image") {{project.member.map[msg.user_id].name[0]}}
+                                                .avatar(*ngIf="msg.type == 'log'")
+                                                    i.fa-solid.fa-history
+
+                            .message-reply(*ngIf="cache.message.parent_id")
+                                span.text-muted 답글을 작성하고 있습니다
+                                .ml-auto
+                                i.fa-solid.fa-xmark((click)="replyMessage()")
+
+                            .message-file-container(*ngIf="(cache.message.attachment && cache.message.attachment.length > 0) || cache.message.uploading")
+                                ng-container(*ngFor="let file of cache.message.attachment")
+                                    a.btn.btn-sm.btn-white((click)="removeAttachment(file)")
+                                        span {{file.filename}}
+                                        i.fa-solid.fa-xmark.ml-2
+                                
+                                a.btn.btn-sm.btn-secondary(*ngIf="cache.message.uploading")
+                                    span {{cache.message.uploading.total}} 중 {{cache.message.uploading.index}} 번째 파일 업로드 중 ({{cache.message.uploading.process | number: '1.0-2'}}%)
+                            
+                            .message-image-container(*ngIf="cache.message.images && cache.message.images.length > 0")
+                                .row.p-0.m-0
+                                    .col-3.p-0.m-0(*ngFor="let image of cache.message.images")
+                                        .message-img([style.background-image]="imageUrl(image)")
+                                            svg(viewBox="0 0 100 100")
+                                                rect(width="100", height="100", style="fill:rgba(255,255,255,0);")
+                                            .btn.btn-red.btn-sm((click)="removeImage(image)")
+                                                i.fa-solid.fa-xmark
+
+                            .message-input.p-2(*ngIf="!readOnly")
+                                .ck-editor-small.ck-editor-works
+                                    textarea('#comment'='', [namespace]="NAMESPACE")
+                                .d-flex.mt-2
+                                    a.btn.btn-blue.btn-sm.mr-1((click)="upload('image')") 이미지
+                                    a.btn.btn-blue.btn-sm((click)="upload('file')") 파일
+                                    .ml-auto
+                                    a.btn.btn-secondary.btn-sm.mr-1((click)="replyMessage()", *ngIf="cache.message.parent_id")
+                                        span 취소
+                                        i.fa-solid.fa-xmark.ml-1
+                                    a.btn.btn-blue.btn-sm((click)="sendMessage()")
+                                        span(*ngIf="cache.message.parent_id") 답글달기
+                                        span(*ngIf="!cache.message.parent_id") 보내기
+                                        i.fa-solid.fa-paper-plane.ml-1
+
+ng-keyboard-shortcuts([shortcuts]="shortcuts")

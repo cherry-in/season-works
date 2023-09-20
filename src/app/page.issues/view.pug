@@ -1,0 +1,65 @@
+.issues-container([ngClass]="'tab-' + tab")
+    .issue-list-container
+        .issue-list-header
+            input.form-control([(ngModel)]="searchText", placeholder="검색어를 입력해주세요", (ngModelChange)="changed()")
+            .ml-1
+            .btn.btn-blue((click)="load(true, 1)")
+                i.fa-solid.fa-rotate-right
+
+        .issue-list-header.p-0(style="border-bottom: none;")
+            a.card-btn((click)="load(true, 1, 'request')", [class.active]="category == 'request'")
+                span 내요청
+            a.card-btn((click)="load(true, 1, 'work')", [class.active]="category == 'work'")
+                span 내작업
+            a.card-btn((click)="load(true, 1, 'all')", [class.active]="category == 'all'")
+                span 전체
+
+        .issue-list('#issuelist'='', (scroll)="onScrollIssue($event)")
+            ng-container(*ngFor="let issue_id of list")
+                ng-container(*ngIf="getIssue(issue_id) as item")
+                    .issue-item((click)="openIssue(item)", [class.active]="issue.id == item.id", *ngIf="match(item)", [ngClass]="displayColor(item)")
+                        .issue-icon
+                            .avatar(style='background-image: url({{item.project.icon}})')
+
+                        .issue-content
+                            .issue-header
+                                .issue-title {{item.title}}
+                                .ml-auto
+                                .issue-date {{displayDate(item.updated)}}
+                                .badge.bg-red.ml-1(*ngIf="item.unread") N
+                            
+                            .issue-body
+                                span.badge([ngClass]="displayStatus(item.status).cls") {{displayStatus(item.status).text}}
+                                span.badge.bg-blue-lt {{item.project.title}}
+                                ng-container(*ngIf="category != 'work'")
+                                    ng-container(*ngFor="let worker of item.worker")
+                                        span.badge.bg-secondary-lt(*ngIf="getUserInfo(worker)")
+                                            span {{getUserInfo(worker).name}}
+                                        span.status.status-blue(*ngIf="!getUserInfo(worker)") 
+                                            span.status-dot
+
+                                ng-container(*ngIf="category == 'work'")
+                                    span.badge.bg-secondary-lt(*ngIf="getUserInfo(item.user_id)")
+                                        span {{getUserInfo(item.user_id).name}}
+                                    span.status.status-blue(*ngIf="!getUserInfo(item.user_id)") 
+                                        span.status-dot
+
+            ng-container(*ngIf="!isLast")
+                .issue-item
+                    .row.w-100
+                        .placeholder.col-9.mb-2
+                        .placeholder.placeholder-xs.col-10.mb-1
+                        .placeholder.placeholder-xs.col-11
+
+    .issue-context
+        ng-container(*ngIf="issue.id")
+            wiz-portal-works-project-issueboard-issue([issue]="issue", [isMovable]="false", [hidden]="!issue.loaded")
+
+        .loading-container(*ngIf="issue.id && !issue.loaded")
+            .text-center
+                .mb-3
+                    a.navbar-brand.navbar-brand-autodark
+                        wiz-portal-season-loading-season([height]="36")
+                .text-muted.mb-3 불러오는 중...
+                .progress.progress-sm
+                    .progress-bar.progress-bar-indeterminate

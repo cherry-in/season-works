@@ -1,0 +1,81 @@
+.container.p-4(*ngIf="mmlist.length > 0")
+    table.table.table-vcenter.table-bordered.table-nowrap.table-hover
+        tbody
+            tr
+                th.w-1.text-center.bg-blue.text-white(*ngIf="!readOnly")
+                th.title.bg-blue.text-white 업무구분
+                th.w-1.text-center.bg-blue.text-white 담당자
+                th.w-1.text-center.bg-blue.text-white M/M
+                th.w-1.text-center.bg-blue.text-white 투입기간
+                th.mm-input.text-center.bg-blue.text-white(*ngFor="let period of mmlist") {{period.title}}
+
+        ng-container(*ngFor="let main of project.plan.data(); let i = index")
+            tbody([ngClass]="'status-' + main.status")
+                tr.bg-light
+                    td.text-left.area-round(*ngIf="!readOnly")
+                        .btn.btn-white.btn-sm((click)="arrayUp(project.plan.data(), main)")
+                            i.fa-solid.fa-arrow-up
+                        .btn.btn-white.btn-sm((click)="arrayDown(project.plan.data(), main)")
+                            i.fa-solid.fa-arrow-down
+                        .btn.btn-red.btn-sm((click)="arrayRemove(project.plan.data(), main)")
+                            i.fa-solid.fa-minus(*ngIf="main.status != 'deleted'")
+                            i.fa-solid.fa-xmark(*ngIf="main.status == 'deleted'")
+                        .btn.btn-blue.btn-sm((click)="arrayAdd(main.child)")
+                            i.fa-solid.fa-plus
+                    
+                    th.title
+                        .d-flex.main-goal
+                            .goal-index {{i + 1}}.
+                            input.form-control.form-control-flush(style="font-family: 'main-eb'", [(ngModel)]="main.title", [disabled]="readOnly")
+                    
+                    td
+                        select.form-select.form-select-flush.w-2([(ngModel)]="main.user", [disabled]="readOnly")
+                            option(*ngFor="let user of project.member.list()", [value]="user.user") {{user.meta.name ? user.meta.name : user.user}}
+                            option(value="") 지정안함
+
+                    td.mm-input.bg-secondary.text-white
+                    td.mm-input.bg-secondary.text-white
+                    td.mm-input.text-blue(*ngFor="let period of main._mm") {{period.mm}}
+
+            tbody([ngClass]="'status-' + main.status", [sortablejs]="main.child", [sortablejsOptions]="{ animation: 150, group: 'wbs', handle: readOnly ? 'tr.not-drag' : 'tr' }")
+                ng-container(*ngFor="let sub of main.child; let j = index")
+                    tr([ngClass]="'status-sub-' + sub.status")
+                        td.area-round.text-left(*ngIf="!readOnly")
+                            .btn.btn-white.btn-sm((click)="arrayUp(main.child, sub)")
+                                i.fa-solid.fa-arrow-up
+                            .btn.btn-white.btn-sm((click)="arrayDown(main.child, sub)")
+                                i.fa-solid.fa-arrow-down
+                            .btn.btn-red.btn-sm((click)="arrayRemove(main.child, sub)")
+                                i.fa-solid.fa-minus
+                        td.title
+                            .d-flex
+                                .goal-index {{i + 1}}-{{j + 1}}.
+                                input.form-control.form-control-flush([(ngModel)]="sub.title", [disabled]="readOnly")
+                        td
+                            select.form-select.form-select-flush.w-2([(ngModel)]="sub.user", [disabled]="readOnly")
+                                option(*ngFor="let user of project.member.list()", [value]="user.user") {{user.meta.name ? user.meta.name : user.user}}
+                                option(value="") 지정안함
+                        td.mm-input.bg-secondary.text-white {{sub.mm | number: '1.0-2'}}
+                        td.mm-input.bg-secondary.text-white {{sub.period}}
+                        td.mm-input(*ngFor="let mmobj of sub.extra.mm")
+                            input.form-control.form-control-flush.w-1(type="number", placeholder="0.5", [(ngModel)]="mmobj.mm", [disabled]="readOnly")
+            
+        tfoot
+            tr.bg-blue
+                th([attr.colspan]="readOnly ? 1 : 2")
+                    .btn.btn-blue.btn-sm.btn-block((click)="arrayAdd(project.plan.data(), {child: []})", *ngIf="!readOnly")
+                        i.fa-solid.fa-plus
+                th.mm-input.text-white {{ calculateMM() | number: '1.0-2' }} / Year
+                th.mm-input.text-white {{ cache.mm | number: '1.0-2' }}
+                th.mm-input.text-white {{ cache.period | number: '1.0-2' }} M
+                th.mm-input.text-white(*ngFor="let period of mmlist") {{period.mm}}
+
+.floating-btn(*ngIf="!readOnly")
+    .btn.btn-blue.mb-3((click)="addMMPeriod()")
+        i.fa-solid.fa-calendar-plus
+
+    .btn.btn-red.mb-3((click)="deleteMMPeriod()")
+        i.fa-solid.fa-calendar-minus
+
+    .btn.btn-blue((click)="update()")
+        i.fa-solid.fa-floppy-disk

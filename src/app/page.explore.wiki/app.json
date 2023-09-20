@@ -1,0 +1,22 @@
+{
+    "mode": "page",
+    "id": "page.explore.wiki",
+    "title": "/explore/wiki",
+    "namespace": "explore.wiki",
+    "viewuri": "/explore/wiki",
+    "category": "general",
+    "preview": "/explore/wiki",
+    "controller": "base",
+    "layout": "layout.aside",
+    "ng.build": {
+        "id": "page.explore.wiki",
+        "name": "PageExploreWikiComponent",
+        "path": "./page.explore.wiki/page.explore.wiki.component"
+    },
+    "ng": {
+        "selector": "wiz-page-explore-wiki",
+        "inputs": [],
+        "outputs": []
+    },
+    "template": "wiz-page-explore-wiki()"
+}

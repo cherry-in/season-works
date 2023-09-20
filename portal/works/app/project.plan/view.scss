@@ -1,0 +1,114 @@
+.display-6 {
+    font-size: 18px;
+}
+
+input.w-1,
+select.w-1 {
+    min-width: 60px;
+}
+
+input.w-2,
+select.w-2 {
+    min-width: 120px;
+}
+
+.status-deleted,
+.status-sub-deleted {
+    opacity: 0.3;
+}
+
+.floating-btn {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+
+    .btn {
+        width: 52px;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        border-radius: 50%;
+        font-size: 20px;
+    }
+}
+
+.goal-index {
+    display: flex;
+    font-size: 16px;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.form-select-flush {
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+}
+
+.container {
+    max-width: 100% !important;
+    height: 100%;
+    overflow: auto;
+}
+
+.mm-input {
+    width: 80px;
+    text-align: center;
+
+    input {
+        text-align: center;
+    }
+}
+
+table {
+    background-color: #fff;
+    margin: 0;
+
+    .bg-light {
+        background-color: var(--wc-blue-light) !important;
+    }
+
+    .title {
+        min-width: 240px;
+    }
+}
+
+td,
+th {
+    padding: 6px 8px;
+    
+    .btn {
+        width: 24px;
+        margin-left: 6px;
+    }
+
+    .btn-block {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+.period-add-btn {
+    display: flex;
+    flex-direction: column;
+
+    .btn {
+        height: 50%;
+        border-radius: 0;
+        border: none;
+    }
+}
+
+.text-white, .text-blue {
+    font-family: 'main-eb';
+}
+
+tfoot {
+    .btn {
+        box-shadow: none;
+        border: none;
+    }
+}

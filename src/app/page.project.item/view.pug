@@ -1,0 +1,29 @@
+ng-container(*ngIf="loaded")
+    .container.pt-4.pb-4(*ngIf="MENU == 'info'")
+        wiz-portal-works-project-info
+
+    ng-container(*ngIf="project.accessLevel(['admin', 'manager', 'user', 'guest'])")
+        .container.pt-4.pb-4(*ngIf="MENU == 'member'")
+            wiz-portal-works-project-member
+        ng-container(*ngIf="MENU == 'plan'")
+            wiz-portal-works-project-plan
+        ng-container(*ngIf="MENU == 'issueboard'")
+            wiz-portal-works-project-issueboard
+        ng-container(*ngIf="MENU == 'meeting'")
+            wiz-portal-works-project-meeting
+        ng-container(*ngIf="MENU == 'drive'")
+            wiz-portal-works-project-drive
+        .container.pt-4.pb-4(*ngIf="MENU == 'wiki'")
+            wiz-portal-works-project-wiki
+    
+    ng-container(*ngIf="project.accessLevel(['visitor'])")
+        .container-tight.pt-4.pb-4(*ngIf="MENU != 'info'")
+            .empty
+                .empty-img
+                    img(src="/assets/portal/works/work.svg")
+                p.empty-title 접근 권한이 없습니다
+                p.empty-subtitle.text-muted 아래 참가하기 버튼을 눌러 프로젝트에 참가해주세요
+                .empty-action
+                    a.btn.btn-blue((click)="joinProject()")
+                        span 참가하기
+                        i.fa-solid.fa-person-running.ml-2

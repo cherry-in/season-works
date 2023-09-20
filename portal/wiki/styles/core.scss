@@ -1,0 +1,13 @@
+.ck-editor-wiki {
+    .ck-editor__main {
+        display: block;
+        overflow: auto;
+    }
+
+    .ck-content {
+        overflow: hidden !important;
+        height: auto;
+        max-width: 820px;
+        padding: 0 40px;
+    }
+}

@@ -1,0 +1,71 @@
+aside.navbar.navbar-vertical.navbar-expand-lg
+    .container-fluid
+        button.navbar-toggler(type="button", (click)="service.navbar.toggle(); $event.stopPropagation();")
+            span.navbar-toggler-icon
+
+        h1.navbar-brand.navbar-brand-autodark.ml-2.mr-2
+            a(routerLink="/")
+                img.navbar-brand-image(src='/assets/portal/season/brand/logo-black.svg')
+        
+        .ml-auto
+
+        .navbar-collapse.collapse([ngbCollapse]="service.navbar.isMenuCollapsed")
+            ul.navbar-nav.pt-lg-3
+                li.nav-item([class.active]="isActive('/issues')", *ngIf="service.auth.show(true)")
+                    a.nav-link(routerLink="/issues", routerLinkActive="active")
+                        span.nav-link-icon.d-md-none.d-lg-inline-block
+                            i.ti.ti-brand-wechat
+                        span.nav-link-title 이슈모음
+                
+                li.nav-item([class.active]="isActive('/explore/project')")
+                    a.nav-link(routerLink="/explore/project", routerLinkActive="active")
+                        span.nav-link-icon.d-md-none.d-lg-inline-block
+                            i.ti.ti-brand-asana
+                        span.nav-link-title 프로젝트 탐색
+                
+                li.nav-item([class.active]="isActive('/explore/wiki')")
+                    a.nav-link(routerLink="/explore/wiki", routerLinkActive="active")
+                        span.nav-link-icon.d-md-none.d-lg-inline-block
+                            i.ti.ti-book-2
+                        span.nav-link-title 위키 탐색
+                
+                li.nav-item.dropdown.active(*ngIf="project.status() && project.isLoaded")
+                    a.nav-link.dropdown-toggle
+                        span.nav-link-icon.d-md-none.d-lg-inline-block.cursor-pointer((click)="project.untrack(!project.data().userconfig_untrack)")
+                            i.fa-regular.fa-star(*ngIf="project.data().userconfig_untrack")
+                            i.fa-solid.fa-star(*ngIf="!project.data().userconfig_untrack")
+
+                        span.nav-link-title {{project.data().title}}
+                    .dropdown-menu.show
+                        .dropdown-menu-columns
+                            .dropdown-menu-column
+                                a.dropdown-item([routerLink]="project.menuLink('info')", routerLinkActive="active") 프로젝트 정보
+                                a.dropdown-item([routerLink]="project.menuLink('member')", routerLinkActive="active") 구성원
+                                a.dropdown-item([routerLink]="project.menuLink('plan')", routerLinkActive="active", *ngIf="project.data().extra.menu.plan") 작업계획
+                                a.dropdown-item([routerLink]="project.menuLink('meeting')", routerLinkActive="active", *ngIf="project.data().extra.menu.meeting") 회의록
+                                a.dropdown-item([routerLink]="project.menuLink('issueboard')", routerLinkActive="active", *ngIf="project.data().extra.menu.issueboard") 이슈보드
+                                a.dropdown-item([routerLink]="project.menuLink('wiki')", routerLinkActive="active", *ngIf="project.data().extra.menu.wiki") 위키
+                                a.dropdown-item([routerLink]="project.menuLink('drive')", routerLinkActive="active", *ngIf="project.data().extra.menu.drive") 드라이브
+            
+                li.nav-item.d-mobile([class.active]="isActive('/mypage')")
+                    a.nav-link(routerLink="/mypage", routerLinkActive="active")
+                        span.nav-link-icon.d-md-none.d-lg-inline-block
+                            i.ti.ti-user-shield
+                        span.nav-link-title 마이페이지
+                
+                li.nav-item.d-mobile
+                    a.nav-link(href="/auth/logout")
+                        span.nav-link-icon.d-md-none.d-lg-inline-block
+                            i.ti.ti-logout
+                        span.nav-link-title 로그아웃
+
+        .nav-footer(*ngIf="service.auth.show(false)")
+            a.login(href="/auth/login") 로그인
+
+        .nav-footer.d-flex.v-login(*ngIf="service.auth.show(true)")
+            a(routerLink="/mypage", routerLinkActive="active")
+                i.ti.ti-user-shield.mr-1
+                span 마이페이지
+            a(href="/auth/logout")
+                i.ti.ti-logout.mr-1
+                span 로그아웃

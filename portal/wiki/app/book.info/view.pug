@@ -1,0 +1,40 @@
+.info-container
+    .container-tight.pt-4.pb-4(*ngIf="loaded")
+        .card
+            .card-body
+                label.form-label 위키 제목
+                input.form-control.form-control-flush(placeholder="새 위키", [(ngModel)]="wikibook.data().title", [disabled]="readOnly")
+            
+            .card-body
+                label.form-label Namespace
+                input.form-control.form-control-flush(placeholder="mybook", [(ngModel)]="wikibook.data().namespace", [disabled]="readOnly")
+                        
+            .card-body.area-round
+                label.form-label 공개범위
+                .form-selectgroup
+                    label.form-selectgroup-item
+                        input.form-selectgroup-input(type='radio', name='book-visibility', value='private', [(ngModel)]="wikibook.data().visibility", [disabled]="readOnly")
+                        span.form-selectgroup-label.pt-1.pb-1
+                            i.fa-solid.me-1.fa-lock
+                            | 비공개
+                    
+                    label.form-selectgroup-item(*ngIf="service.auth.show.membership(['admin', 'staff'])")
+                        input.form-selectgroup-input(type='radio', name='book-visibility', value='internal', [(ngModel)]="wikibook.data().visibility", [disabled]="readOnly")
+                        span.form-selectgroup-label.pt-1.pb-1
+                            i.fa-solid.me-1.fa-users
+                            | 내부공개
+                    
+                    label.form-selectgroup-item
+                        input.form-selectgroup-input(type='radio', name='book-visibility', value='public', [(ngModel)]="wikibook.data().visibility", [disabled]="readOnly")
+                        span.form-selectgroup-label.pt-1.pb-1
+                            i.fa-solid.me-1.fa-lock-open
+                            | 전체공개
+
+            .card-body
+                label.form-label 설명
+                textarea.form-control.form-control-flush(placeholder="위키 설명을 입력해주세요", [(ngModel)]="wikibook.data().description", [disabled]="readOnly", rows=5)
+            
+            .card-footer.d-flex(*ngIf="wikibook.data().id")
+                .ml-auto
+                .btn.btn-blue((click)="update()") 저장하기
+

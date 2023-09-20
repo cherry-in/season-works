@@ -1,0 +1,21 @@
+{
+    "mode": "portal",
+    "id": "project.member",
+    "title": "project/member",
+    "namespace": "project.member",
+    "viewuri": "",
+    "category": "project",
+    "controller": "base",
+    "type": "app",
+    "template": "wiz-portal-works-project-member()",
+    "ng.build": {
+        "id": "portal.works.project.member",
+        "name": "PortalWorksProjectMemberComponent",
+        "path": "./portal.works.project.member/portal.works.project.member.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-works-project-member",
+        "inputs": [],
+        "outputs": []
+    }
+}

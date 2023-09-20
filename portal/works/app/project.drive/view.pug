@@ -1,0 +1,184 @@
+.drive-container
+    ng-container(*ngIf="project.drive.status")
+        .alert.alert-info.alert-uploading(role="alert")
+            h4.alert-title 파일 업로드 ({{project.drive.queue.length}}개 파일)
+            .text-secondary {{project.drive.current}}
+            .progress.progress-sm.mt-1
+                .progress-bar.bg-blue(style="width: {{project.drive.percent}}%;")
+    
+    .drive-header
+        .drive-header-container.area-round
+            .drive-title 드라이브
+            .ml-auto
+            ng-container(*ngIf="accessLevel()")
+                .btn.btn-red.ml-2((click)="deleteSelected()", *ngIf="selected.length > 0")
+                    i.fa-solid.fa-trash-can
+                .btn.btn-blue.ml-2((click)="upload(current)")
+                    i.fa-solid.fa-arrow-up-from-bracket
+                .btn.btn-blue.ml-2((click)="create(current, false)")
+                    i.fa-solid.fa-folder-plus
+
+    .drive-body
+        .drive-aside
+            .aside-header([class.active]="tab == 'files'", (click)="tabChange('files')") 파일
+                
+            .drive-tree(
+                (drop)="treeConfig.rootNode().drop($event)",
+                (dragend)="treeConfig.rootNode().dragend($event)", 
+                (dragover)="treeConfig.rootNode().dragover($event)")
+
+                .container.p-3
+                    ng-container(*ngIf="treeConfig.rootNode && treeConfig.rootNode().newItem")
+                        .tree-node
+                            i.tree-icon.fa-regular.fa-folder.mr-2
+                            .tree-node-title
+                                input.form-control.form-control-sm([(ngModel)]="treeConfig.rootNode().newItem.title", placeholder="폴더명", (keyup.enter)="createFolder(treeConfig.rootNode())")
+                            i.icon-action-always.fa-solid.fa-xmark((click)="cancelCreate(treeConfig.rootNode()); $event.stopPropagation();")
+                            i.icon-action-always.fa-solid.fa-check((click)="createFolder(treeConfig.rootNode()); $event.stopPropagation();")
+
+                    wiz-portal-season-viewer-tree([config]="treeConfig")
+                        ng-template('#fileTemplate'='', let-data='')
+                            .tree-node(*ngIf="data.type != 'file'", (click)="data.select(); $event.stopPropagation();", (dblclick)="open(data); $event.stopPropagation();", [class.active]="data.isActive()") 
+                                ng-container(*ngIf="data.type == 'file'")
+                                    i.tree-icon.mr-1([ngClass]="icon(data)")
+                                ng-container(*ngIf="data.type == 'folder'")
+                                    i.tree-icon.mr-1([ngClass]="icon(data)", (click)="data.editable = !data.editable; $event.stopPropagation(); service.render()")
+
+                                .tree-node-title
+                                    span(*ngIf="!data.editable") {{data.title}}
+                                    input.form-control.form-control-sm([(ngModel)]="data.rename", placeholder="폴더명", (keyup.enter)="data.update();", *ngIf="data.editable", (click)="$event.stopPropagation();")
+                                
+                                ng-container(*ngIf="data.type == 'folder'")
+                                    i.icon-action.fa-solid.fa-folder-plus((click)="create(data); $event.stopPropagation();")
+                                    i.icon-action.fa-solid.fa-arrow-up-from-bracket((click)="upload(data); $event.stopPropagation();")
+                                i.icon-action.fa-solid.fa-trash-can((click)="delete(data); $event.stopPropagation();")
+                                i.icon-action.fa-solid.fa-download((click)="download(data); $event.stopPropagation();")
+
+                            ng-container(*ngIf="data.newItem")
+                                .tree-root
+                                    .tree-node
+                                        i.tree-icon.fa-regular.fa-folder.mr-2
+                                        .tree-node-title
+                                            input.form-control.form-control-sm([(ngModel)]="data.newItem.title", placeholder="폴더명", (keyup.enter)="createFolder(data)")
+                                        i.icon-action-always.fa-solid.fa-xmark((click)="cancelCreate(data); $event.stopPropagation();")
+                                        i.icon-action-always.fa-solid.fa-check((click)="createFolder(data); $event.stopPropagation();")
+
+            .aside-header([class.active]="tab == 'attachment'", (click)="tabChange('attachment')") 이슈파일
+            .aside-header([class.active]="tab == 'photo'", (click)="tabChange('photo')") 사진
+
+        ng-container(*ngIf="current && tab =='files'")
+            .drive-content(
+                (drop)="current.drop($event)",
+                (dragend)="preventEvent($event)", 
+                (dragover)="preventEvent($event)")
+
+                table.table.table-vcenter.table-nowrap.card-table.table-hover
+                    thead.sticky-top
+                        tr
+                            th.w-1
+                                ng-container(*ngIf="accessLevel()")
+                                    span.badge.cursor-pointer([ngClass]="selected.length == current.getChildren().length ? 'bg-blue' : 'badge-outline text-blue'", (click)="selectAll()")
+                                        i.fa-solid.fa-check
+                            th 이름
+                            th.w-1.text-right 크기
+                            th.w-1.text-right 수정된 날짜
+                            th.w-1 
+                    tbody
+                        tr.cursor-pointer(*ngIf="current.id")
+                            td
+                            td(colspan=4, (click)="open(current.parent()); $event.stopPropagation();")
+                                .file-title
+                                    i.mr-2.fa-solid.fa-folder
+                                    span ..
+                        
+                        tr(*ngIf="newFolder.type")
+                            td
+                            td(colspan=3)
+                                .file-title
+                                    i.mr-2.fa-solid.fa-folder-plus
+                                    input.form-control.form-control-sm.form-control-flush(placeholder="새로운 폴더", [(ngModel)]="newFolder.title", (keyup.enter)="createFolder(current, false)")
+                            td
+                                span.badge.bg-secondary.cursor-pointer((click)="cancelCreate(current, false)")
+                                    i.fa-solid.fa-xmark
+                                span.ml-1
+                                span.badge.bg-secondary.cursor-pointer((click)="createFolder(current, false)")
+                                    i.fa-solid.fa-check
+
+                        ng-container(*ngFor="let file of current.getChildren()")
+                            tr(
+                                draggable="true",
+                                [class.bg-blue-lt]="isSelected(file)", 
+                                [class.bg-secondary-lt]="isDrop(file)",
+                                (dragend)="dragend($event, file)", 
+                                (dragover)="dragover($event, file)",
+                                (click)="select(file); $event.stopPropagation();", 
+                                (dblclick)="open(file); $event.stopPropagation();")
+
+                                td.select-btns
+                                    ng-container(*ngIf="accessLevel()")
+                                        span.badge([ngClass]="isSelected(file) ? 'bg-blue' : 'badge-outline text-blue'", (click)="select(file); $event.stopPropagation();")
+                                            i.fa-solid.fa-check
+                                td
+                                    .file-title
+                                        i.mr-2([ngClass]="icon(file, false)")
+                                        span(*ngIf="!file.editable", (click)="open(file); $event.stopPropagation();") {{file.title}}
+                                        input.form-control.form-control-sm([(ngModel)]="file.rename", placeholder="폴더명", (keyup.enter)="file.update();", *ngIf="file.editable", (click)="$event.stopPropagation();")
+                                
+                                td.text-muted.text-right {{file.size}}
+                                td.text-muted {{file.modified}}
+                                td.action-btns
+                                    ng-container(*ngIf="accessLevel()")
+                                        ng-container(*ngIf="!file.editable")
+                                            span.badge.bg-secondary.cursor-pointer.text-white((click)="rename(file); $event.stopPropagation();")
+                                                i.fa-solid.fa-i-cursor
+                                            span.mr-1
+                                        span.badge.bg-red.cursor-pointer((click)="delete(file); $event.stopPropagation();")
+                                            i.fa-solid.fa-trash
+                        
+                        tr(*ngIf="!newFolder.type && current.getChildren().length == 0")
+                            td(colspan=5)
+                                .empty
+                                    .empty-img
+                                        img(src="/assets/portal/works/work.svg")
+                                    p.empty-title 업로드된 파일이 없습니다
+        
+        ng-container(*ngIf="tab =='attachment'")
+            .attachment-content
+                .file-list
+                    table.table.table-vcenter.table-nowrap.card-table.table-hover
+                        thead.sticky-top
+                            tr
+                                th 이름
+                                th.w-1.text-right 생성된 날짜
+                        tbody
+                            tr(*ngFor="let file of attachment.list")
+                                td
+                                    .file-title
+                                        i.mr-2([ngClass]="icon(file, false)")
+                                        a([href]="imageUrl(file, false)", target="_blank") {{file.filename}}
+                                td.text-muted {{file.created}}
+                
+                .pagenation
+                    wiz-portal-season-pagenation(
+                        [current]="attachment.page", 
+                        [start]="attachment.start", 
+                        [end]="attachment.end", 
+                        (pageMove)="loadAttachment($event)")
+        
+        ng-container(*ngIf="tab =='photo'")
+            .attachment-content
+                .photo-list.p-2
+                    .row.p-0.m-0
+                        .col-md-4.p-2(*ngFor="let photo of attachment.list")
+                            .photo-item.border.rounded-3
+                                .img-responsive.img-responsive-1x1.rounded-3([style.background-image]="imageUrl(photo)")
+                                .img-action.rounded-3
+                                    a.btn.btn-white([href]="imageUrl(photo, false)", target="_blank")
+                                        i.fa-solid.fa-download
+
+                .pagenation
+                    wiz-portal-season-pagenation(
+                        [current]="attachment.page", 
+                        [start]="attachment.start", 
+                        [end]="attachment.end", 
+                        (pageMove)="loadAttachment($event)")

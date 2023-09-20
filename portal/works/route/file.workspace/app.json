@@ -1,0 +1,8 @@
+{
+    "id": "file.workspace",
+    "title": "/api/works/attachment/<path:path>",
+    "route": "/api/works/attachment/<path:path>",
+    "viewuri": "",
+    "category": "file",
+    "controller": "base"
+}

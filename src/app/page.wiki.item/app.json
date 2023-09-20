@@ -1,0 +1,21 @@
+{
+    "mode": "page",
+    "id": "page.wiki.item",
+    "title": "/wiki/:path?",
+    "namespace": "wiki.item",
+    "viewuri": "/wiki/:id/:content?",
+    "category": "wiki",
+    "controller": "base",
+    "layout": "layout.aside",
+    "ng.build": {
+        "id": "page.wiki.item",
+        "name": "PageWikiItemComponent",
+        "path": "./page.wiki.item/page.wiki.item.component"
+    },
+    "ng": {
+        "selector": "wiz-page-wiki-item",
+        "inputs": [],
+        "outputs": []
+    },
+    "template": "wiz-page-wiki-item()"
+}

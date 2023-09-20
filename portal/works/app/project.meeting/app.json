@@ -1,0 +1,21 @@
+{
+    "mode": "portal",
+    "id": "project.meeting",
+    "title": "project/meeting",
+    "namespace": "project.meeting",
+    "viewuri": "",
+    "category": "project",
+    "controller": "base",
+    "type": "app",
+    "template": "wiz-portal-works-project-meeting()",
+    "ng.build": {
+        "id": "portal.works.project.meeting",
+        "name": "PortalWorksProjectMeetingComponent",
+        "path": "./portal.works.project.meeting/portal.works.project.meeting.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-works-project-meeting",
+        "inputs": [],
+        "outputs": []
+    }
+}

@@ -1,0 +1,90 @@
+.container
+    .row                            
+        .col-md-9.p-4
+            .row.row-cards
+                .space-y
+                    .card(*ngIf="!loaded")
+                        .card-body.text-end.placeholder-glow
+                            .placeholder.col-9.mb-3
+                            .placeholder.placeholder-xs.col-10
+                            .placeholder.placeholder-xs.col-11
+                            .placeholder.placeholder-xs.col-8
+
+                    .card.card-hover(*ngIf="list.length == 0 && loaded")
+                        .empty
+                            .empty-img
+                                img(src="/assets/portal/works/work.svg")
+                            p.empty-title 검색된 위키가 없습니다
+                            p.empty-subtitle.text-muted(*ngIf="service.auth.show.membership(['admin', 'staff', 'user'])") 아래 시작하기 버튼을 눌러서 위키를 시작해주세요.
+                            .empty-action(*ngIf="service.auth.show.membership(['admin', 'staff', 'user'])")
+                                a.btn.btn-blue((click)="createProject()")
+                                    span 시작하기
+                                    i.fa-solid.fa-person-running.ml-2
+
+                    ng-container(*ngFor="let item of list")
+                        .card.card-hover([routerLink]="'/wiki/' + item.namespace")
+                            .row.g-0
+                                .col-auto
+                                    .card-body
+                                        .avatar.avatar-md(style='background-image: url({{item.icon}})')
+                                .col
+                                    .card-body.ps-0
+                                        .row
+                                            .col
+                                                h3.mb-0
+                                                    a {{item.title}}
+                                        .row
+                                            .col-md
+                                                .mt-2.list-inline.list-inline-dots.mb-0.text-muted
+                                                    .list-inline-item
+                                                        i.ti.ti-rotate-clockwise-2.mr-1
+                                                        span {{displayDate(item.updated)}}
+
+
+            .mt-4.mb-4
+                wiz-portal-season-pagenation(
+                    [current]="search.page", 
+                    [start]="pagenation.start", 
+                    [end]="pagenation.end", 
+                    (pageMove)="load($event)")
+
+        .col-md-3
+            .sticky-top.pt-4.pb-4
+                .btn.btn-blue.btn-block.mb-3((click)="createProject()", *ngIf="service.auth.show.membership(['admin', 'staff', 'user'])")
+                    i.ti.ti-plus.mr-2
+                    span 새 위키 만들기
+
+                .form-label 위키 제목
+                .mb-4
+                    input.form-control(placeholder="검색어를 입력해주세요", [(ngModel)]="search.text", (keyup.enter)="load()")
+                
+                .form-label 공개 범위
+                .mb-4
+                    label.form-check
+                        input.form-check-input(type='radio', name='project-range', value='join', [(ngModel)]="search.range", (change)="load()")
+                        span.form-check-label 참여중인 위키
+                    label.form-check(*ngIf="service.auth.show.membership(['admin', 'staff', 'user'])")
+                        input.form-check-input(type='radio', name='project-range', value='manage', [(ngModel)]="search.range", (change)="load()")
+                        span.form-check-label 내 위키
+                    label.form-check
+                        input.form-check-input(type='radio', name='project-range', value='all', [(ngModel)]="search.range", (change)="load()")
+                        span.form-check-label 전체 위키
+
+.wiz-modal(*ngIf="newProject")
+    .modal
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header.p-3
+                    h3.modal-title 새로운 위키
+                    .ml-auto
+                    .text-dark.close-btn((click)="closeCreateBookModal()")
+                        i.fa-solid.fa-xmark
+            
+                .modal-body
+                    wiz-portal-wiki-book-info([hasSaveBtn]="false")
+                
+                .modal-footer.d-flex
+                    .btn.btn-white((click)="closeCreateBookModal()") 닫기
+                    .ml-auto
+                    .btn.btn-blue((click)="createBook()") 시작하기
+

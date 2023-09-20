@@ -1,0 +1,22 @@
+{
+    "mode": "page",
+    "id": "page.project.item",
+    "title": "/project/:path?",
+    "namespace": "project.item",
+    "viewuri": "/project/:id/:menu?",
+    "category": "works",
+    "preview": "/project/hmd",
+    "controller": "base",
+    "layout": "layout.aside",
+    "ng.build": {
+        "id": "page.project.item",
+        "name": "PageProjectItemComponent",
+        "path": "./page.project.item/page.project.item.component"
+    },
+    "ng": {
+        "selector": "wiz-page-project-item",
+        "inputs": [],
+        "outputs": []
+    },
+    "template": "wiz-page-project-item()"
+}

@@ -1,0 +1,23 @@
+{
+    "mode": "portal",
+    "id": "widget.project.issueboard.issue",
+    "title": "Issue Card",
+    "namespace": "widget.project.issueboard.issue",
+    "viewuri": "",
+    "category": "project",
+    "controller": "",
+    "type": "app",
+    "template": "wiz-portal-works-widget-project-issueboard-issue([issue]=\"\")",
+    "ng.build": {
+        "id": "portal.works.widget.project.issueboard.issue",
+        "name": "PortalWorksWidgetProjectIssueboardIssueComponent",
+        "path": "./portal.works.widget.project.issueboard.issue/portal.works.widget.project.issueboard.issue.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-works-widget-project-issueboard-issue",
+        "inputs": [
+            "issue"
+        ],
+        "outputs": []
+    }
+}

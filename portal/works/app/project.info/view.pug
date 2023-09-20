@@ -1,0 +1,164 @@
+.row.works-project-info(*ngIf="loaded")
+    .col-md-4
+        .card
+            .card-body
+                label.form-label 프로젝트명
+                input.form-control.form-control-flush(placeholder="새 프로젝트", [(ngModel)]="project.data().title", [disabled]="readOnly")
+            
+            .card-body
+                label.form-label 아이콘
+                .col
+                    .avatar.avatar-sm(style='background-image: url({{project.data().icon}})', (click)="updateIcon()")
+                    .ml-2.btn.btn-secondary.pt-1.pb-1((click)="updateIcon()") 아이콘 등록
+                    .ml-2.btn.btn-link.pt-1.pb-1(*ngIf="project.data().icon", (click)="deleteIcon()") 아이콘 삭제
+
+            .card-body
+                label.form-label Namespace
+                input.form-control.form-control-flush(placeholder="myproject", [(ngModel)]="project.data().namespace", [disabled]="readOnly")
+
+            .card-body
+                label.form-label 축약명
+                input.form-control.form-control-flush(placeholder="DIZEST", [(ngModel)]="project.data().short", [disabled]="readOnly")
+            
+            .card-body.area-round(*ngIf="project.data().status != 'draft'")
+                label.form-label 진행상태
+                .form-selectgroup
+                    label.form-selectgroup-item
+                        input.form-selectgroup-input(type='radio', name='project-status', value='open', [(ngModel)]="project.data().status", [disabled]="readOnly")
+                        span.form-selectgroup-label.pt-1.pb-1
+                            i.fa-solid.me-1.fa-toggle-on
+                            | 진행중
+                    
+                    label.form-selectgroup-item
+                        input.form-selectgroup-input(type='radio', name='project-status', value='close', [(ngModel)]="project.data().status", [disabled]="readOnly")
+                        span.form-selectgroup-label.pt-1.pb-1
+                            i.fa-solid.me-1.fa-power-off
+                            | 종료됨
+                        
+            .card-body.area-round
+                label.form-label 공개범위
+                .form-selectgroup
+                    label.form-selectgroup-item
+                        input.form-selectgroup-input(type='radio', name='project-visibility', value='private', [(ngModel)]="project.data().visibility", [disabled]="readOnly")
+                        span.form-selectgroup-label.pt-1.pb-1
+                            i.fa-solid.me-1.fa-lock
+                            | 비공개
+                    
+                    label.form-selectgroup-item(*ngIf="service.auth.show.membership(['admin', 'staff'])")
+                        input.form-selectgroup-input(type='radio', name='project-visibility', value='internal', [(ngModel)]="project.data().visibility", [disabled]="readOnly")
+                        span.form-selectgroup-label.pt-1.pb-1
+                            i.fa-solid.me-1.fa-users
+                            | 내부공개
+                    
+                    label.form-selectgroup-item
+                        input.form-selectgroup-input(type='radio', name='project-visibility', value='public', [(ngModel)]="project.data().visibility", [disabled]="readOnly")
+                        span.form-selectgroup-label.pt-1.pb-1
+                            i.fa-solid.me-1.fa-lock-open
+                            | 전체공개
+            
+            .card-body
+                label.form-label 시작일
+                input.form-control.form-control-flush(type="date", [(ngModel)]="project.data().start", [disabled]="readOnly")
+            
+            .card-body
+                label.form-label 마감일
+                input.form-control.form-control-flush(type="date", [(ngModel)]="project.data().end", [disabled]="readOnly")
+            
+        .card.mt-4(*ngIf="project.accessLevel(['admin'])")
+            .card-body
+                label.form-label 프로젝트 메뉴
+                
+                label.form-check.form-switch
+                    input.form-check-input(type="checkbox", [(ngModel)]="project.data().extra.menu.plan")
+                    span.form-check-label.form-check-label 작업계획
+                
+                label.form-check.form-switch
+                    input.form-check-input(type="checkbox", [(ngModel)]="project.data().extra.menu.meeting")
+                    span.form-check-label.form-check-label 회의록
+                
+                label.form-check.form-switch
+                    input.form-check-input(type="checkbox", [(ngModel)]="project.data().extra.menu.issueboard")
+                    span.form-check-label.form-check-label 이슈보드
+                
+                label.form-check.form-switch
+                    input.form-check-input(type="checkbox", [(ngModel)]="project.data().extra.menu.wiki")
+                    span.form-check-label.form-check-label 위키
+                
+                label.form-check.form-switch
+                    input.form-check-input(type="checkbox", [(ngModel)]="project.data().extra.menu.drive")
+                    span.form-check-label.form-check-label 드라이브
+
+        .card.mt-4(*ngIf="project.accessLevel(['admin'])")
+            .card-body
+                label.form-label 메인메뉴
+                select.form-select([(ngModel)]="project.data().extra.main")
+                    option(value="info") 프로젝트 정보
+                    option(value="meeting") 회의록
+                    option(value="issueboard") 이슈보드
+                    option(value="drive") 드라이브
+
+        .area-round(*ngIf="hasSaveBtn && !readOnly")
+            .btn.btn-blue.btn-sm.btn-block.mt-4.pr-3.pl-3((click)="update()")
+                i.fa-solid.fa-floppy-disk
+                span.ml-2 저장하기
+
+    .col-md-8
+        .card.mb-4
+            .card-header.area-round
+                h4.card-title 프로젝트 내용
+                .ml-auto
+                .btn.btn-blue.btn-sm.pr-3.pl-3((click)="update()", *ngIf="hasSaveBtn && !readOnly")
+                    i.fa-solid.fa-floppy-disk
+                    span.ml-2 저장하기
+            
+            .card-body.p-0.workspace-ckeditor.ck-editor-noborder.ck-editor-works
+                textarea('#editor'='', [attr.namespace]="NAMESPACE")
+            
+            .card-footer
+        
+        .card.mb-4
+            .card-header.area-round
+                h4.card-title 프로젝트 목표
+                .ml-auto
+                .btn.btn-blue.btn-sm.pr-3.pl-3((click)="update()", *ngIf="hasSaveBtn && !readOnly")
+                    i.fa-solid.fa-floppy-disk
+                    span.ml-2 저장하기
+
+            .table-responsive(*ngIf="project.data().extra && project.data().extra.goal")
+                table.table.table-bordered.table-nowrap.card-table
+                    thead
+                        tr
+                            th.w-1 분류
+                            th 목표
+                            th 상세설명
+                            th.w-1 단위
+                            th.w-1(*ngIf="!readOnly")
+                    
+                    tbody([sortablejs]="project.data().extra.goal", [sortablejsOptions]="{ animation: 150 }")
+                        ng-container(*ngFor="let item of project.data().extra.goal")
+                            tr.text-left
+                                td
+                                    select.form-select.form-select-flush.w-2([(ngModel)]="item.type", [disabled]="readOnly")
+                                        option(value="서비스") 서비스
+                                        option(value="시스템") 시스템
+                                        option(value="솔루션") 솔루션
+                                        option(value="알고리즘") 알고리즘
+                                        option(value="문서") 문서
+                                        option(value="논문") 논문
+                                        option(value="특허") 특허
+                                        option(value="기타") 기타
+                                td
+                                    input.form-control.form-control-flush([(ngModel)]="item.title", placeholder="데이터 공유 웹 서비스", [disabled]="readOnly")
+                                td
+                                    textarea.form-control.form-control-flush([(ngModel)]="item.desc", rows=3, placeholder="상세 설명", [disabled]="readOnly")
+                                td
+                                    input.form-control.form-control-flush.w-1([(ngModel)]="item.unit", placeholder="수량/단위", [disabled]="readOnly")
+                                td.area-round(*ngIf="!readOnly")
+                                    .btn.btn-red.btn-sm((click)="arrayRemove(project.data().extra.goal, item)", style="width: 48px;")
+                                        i.fa-solid.fa-xmark
+
+            .card-footer.pt-2.pb-2.area-round(*ngIf="!readOnly")
+                .btn.btn-sm.btn-block.btn-secondary((click)="arrayAdd(project.data().extra.goal, {type: '서비스'})")
+                    i.fa-solid.fa-plus
+
+ng-keyboard-shortcuts([shortcuts]="shortcuts")

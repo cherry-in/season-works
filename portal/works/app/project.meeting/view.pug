@@ -1,0 +1,88 @@
+.container([ngClass]="'tab-' + tab")
+    .card(*ngIf="selected")
+        .card-body.p-0
+            .sidebar
+                .btn.btn-blue.btn-block((click)="create()", *ngIf="!readOnly", style="border-radius: 0; border: none;")
+                    i.fa-solid.fa-plus.mr-2
+                    span 회의록 생성하기
+
+                .sidebar-search
+                    .input-icon
+                        input.form-control(
+                            type="text",
+                            placeholder="검색",
+                            [(ngModel)]="query.text")
+
+                        span.input-icon-addon
+                            svg.icon(xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' fill='none' stroke-linecap='round' stroke-linejoin='round')
+                                path(stroke='none' d='M0 0h24v24H0z')
+                                circle(cx='10' cy='10' r='7')
+                                line(x1='21' y1='21' x2='15' y2='15')
+
+                .sidebar-content
+                    .sidebar-content-scroll
+                        table.table.table-hover.table-bordered
+                            ng-container(*ngFor="let item of list")
+                                tr(*ngIf="item.title.toLowerCase().indexOf(query.text.toLowerCase()) >= 0")
+                                    td.text-left((click)="select(item)", class="{{selected.id == item.id ? 'active' : '' }}")
+                                        h4.m-0.p-0 {{item.title}}
+                                        span.text-muted {{item.meetdate.substring(0, 16)}} / {{item.user.name}}
+            
+            .context-area(*ngIf="editorLoaded && !(isEditable() || list.length > 0)")
+                .empty
+                    .empty-img
+                        img(src="/assets/portal/works/work.svg")
+                    p.empty-title 진행된 회의가 없습니다
+                    
+            .context-area(*ngIf="editorLoaded && (isEditable() || list.length > 0)")
+                .meetinfo
+                    .meet-back
+                        .btn.btn-block.btn-blue((click)="switchTab('list')") 회의목록
+
+                    .meet-title
+                        label.form-label 회의제목
+                        input.form-control.form-control-flush(placeholder="새로운 회의", [(ngModel)]="selected.title", (change)="onChange(false)", [disabled]="!isEditable()")
+                    
+                    .meet-date
+                        label.form-label 회의일시
+                        input.form-control.form-control-flush(type="date", [(ngModel)]="selected.meetdate_day", (change)="onChange(false)", [disabled]="!isEditable()")
+                    
+                    .meet-date
+                        label.form-label 회의시간
+                        input.form-control.form-control-flush(type="time", [(ngModel)]="selected.meetdate_time", step="1800", (change)="onChange(false)", [disabled]="!isEditable()")
+                    
+                    .meet-date(*ngIf="selected.id")
+                        label.form-label 버전
+                        select.form-select.form-select-flush([(ngModel)]="selected.version", (change)="buildEditor()")
+                            option(value="latest") 최신
+                            ng-container(*ngFor="let ver of versions")
+                                option([value]="ver.id") {{ver.name}}
+
+                .p-4.pt-2.pb-2.attachment-container(*ngIf="selected.attachment.length > 0")
+                    ng-container(*ngFor="let file of selected.attachment")
+                        .btn-group
+                            a.btn.btn-sm.btn-secondary([attr.href]="project.downloadUrl(file.id, file.filename)", target="_blank")
+                                span {{file.filename}}
+                                i.fa-solid.fa-download.ml-2
+                            a.btn.btn-sm.btn-secondary((click)="removeAttachment(file)", *ngIf="isEditable()")
+                                i.fa-solid.fa-xmark
+
+                .editor-area.ck-fit-content.ck-editor-noborder.ck-editor-works.ck-editor-docs
+                    textarea('#editor'='', [attr.namespace]="NAMESPACE")
+
+            .fab-area(*ngIf="!readOnly")
+                ng-container(*ngIf="selected.id")
+                    button.btn.btn-red.mb-3((click)="delete()", *ngIf="isEditable() && project.accessLevel(['admin', 'manager'])")
+                        i.fas.fa-trash
+                    br(*ngIf="isEditable() && project.accessLevel(['admin', 'manager'])")
+                    button.btn.btn-blue.mb-3((click)="upload()", *ngIf="isEditable()")
+                        i.fas.fa-upload
+                    br
+                    button.btn.btn-blue((click)="revision()", *ngIf="isEditable()")
+                        i.fas.fa-file-circle-check
+                        
+                ng-container(*ngIf="!selected.id")
+                    button.btn.btn-blue((click)="update()", *ngIf="isEditable()")
+                        i.fa-solid.fa-save
+
+ng-keyboard-shortcuts([shortcuts]="shortcuts")

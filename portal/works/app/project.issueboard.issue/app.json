@@ -1,0 +1,24 @@
+{
+    "mode": "portal",
+    "id": "project.issueboard.issue",
+    "title": "project/issueboard/issue",
+    "namespace": "project.issueboard.issue",
+    "viewuri": "",
+    "category": "project",
+    "controller": "base",
+    "type": "app",
+    "template": "wiz-portal-works-project-issueboard-issue([issue]=\"\", [isMovable]=\"\")",
+    "ng.build": {
+        "id": "portal.works.project.issueboard.issue",
+        "name": "PortalWorksProjectIssueboardIssueComponent",
+        "path": "./portal.works.project.issueboard.issue/portal.works.project.issueboard.issue.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-works-project-issueboard-issue",
+        "inputs": [
+            "issue",
+            "isMovable"
+        ],
+        "outputs": []
+    }
+}

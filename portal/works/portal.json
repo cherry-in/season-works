@@ -1,0 +1,14 @@
+{
+    "package": "works",
+    "title": "Season Works",
+    "version": "1.0.0",
+    "repo": "",
+    "use_app": true,
+    "use_widget": true,
+    "use_route": true,
+    "use_libs": true,
+    "use_styles": true,
+    "use_assets": true,
+    "use_controller": true,
+    "use_model": true
+}

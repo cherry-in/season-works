@@ -1,0 +1,23 @@
+{
+    "mode": "portal",
+    "type": "app",
+    "id": "book.info",
+    "title": "book/info",
+    "namespace": "book.info",
+    "viewuri": "",
+    "category": "book",
+    "controller": "base",
+    "template": "wiz-portal-wiki-book-info([hasSaveBtn]=\"\")",
+    "ng.build": {
+        "id": "portal.wiki.book.info",
+        "name": "PortalWikiBookInfoComponent",
+        "path": "./portal.wiki.book.info/portal.wiki.book.info.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-wiki-book-info",
+        "inputs": [
+            "hasSaveBtn"
+        ],
+        "outputs": []
+    }
+}

@@ -1,0 +1,29 @@
+.content-page-header {
+    display: flex;
+    align-items: center;
+    padding: 18px 16px;
+    padding-top: 0;
+
+    * {
+        margin: 0;
+        line-height: 1;
+    }
+}
+
+.card-body {
+    border: none;
+}
+
+.alert {
+    font-size: 16px;
+}
+
+.wiz-form .wiz-form-rows:first-child {
+    // border-top: 1px solid #E3E3E3;
+    border-top: none;
+}
+
+.wiz-form .wiz-form-rows:last-child {
+    // border-bottom: 1px solid #E3E3E3;
+    border-bottom: none;
+}

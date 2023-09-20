@@ -1,0 +1,8 @@
+{
+    "id": "book",
+    "title": "/api/wiki/book/<path:path>",
+    "route": "/api/wiki/book/<path:path>",
+    "viewuri": "",
+    "category": "wiki",
+    "controller": "base"
+}

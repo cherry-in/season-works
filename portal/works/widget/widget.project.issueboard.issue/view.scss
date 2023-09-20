@@ -1,0 +1,25 @@
+.issue-card {
+    cursor: pointer;
+
+    &:hover {
+        border: 2px solid var(--wc-blue);
+    }
+}
+
+.card-title {
+    word-break: break-all;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    border-radius: 0;
+}
+
+.title-area {
+    padding: 16px;
+    padding-top: 12px;
+    padding-bottom: 4px;
+}

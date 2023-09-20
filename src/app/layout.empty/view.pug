@@ -1,0 +1,8 @@
+.wiz-page
+    .wiz-content
+        .wiz-view
+            router-outlet
+
+wiz-portal-season-alert
+.block-page(*ngIf="service.auth.status === null || service.loading.isshow")
+    wiz-portal-season-loading-season([height]="48")

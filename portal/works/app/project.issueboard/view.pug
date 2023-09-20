@@ -1,0 +1,91 @@
+.issue-layout
+    .workspace(*ngIf="cache.loaded", '#container'='')
+        ng-container(*ngIf="labels.length == 0")
+            .container-tight
+                .empty
+                    .empty-img
+                        img(src="/assets/portal/works/work.svg")
+                    p.empty-title 이슈보드가 시작되지 않았습니다
+                    p.empty-subtitle.text-muted(*ngIf="!readOnly") 아래 시작하기 버튼을 눌러서 이슈보드를 시작해주세요.
+                    .empty-action(*ngIf="!readOnly")
+                        a.btn.btn-blue((click)="start()")
+                            span 시작하기
+                            i.fa-solid.fa-person-running.ml-2
+
+        ng-container(*ngIf="labels.length > 0")
+            .work-container
+                .label-container([sortablejs]="labels", [sortablejsOptions]="config.labelSorted")
+                    .work-group(*ngFor="let label of labels")
+                        .work-content
+                            .work-header
+                                input.form-control.form-control-flush([(ngModel)]="label.title", (change)="updateLabels([label])", [disabled]="!project.accessLevel(['admin', 'manager'])")
+                                .ml-auto
+                                .d-flex
+                                    .btn.btn-sm.btn-secondary((click)="addIssue(label)")
+                                        i.fa-solid.fa-plus
+                                    ng-container(*ngIf="project.accessLevel(['admin', 'manager'])")
+                                        .btn.btn-sm.btn-secondary.btn-action-move.ml-1(*ngIf="label.mode == 0")
+                                            i.fa-solid.fa-up-down-left-right
+                                        .btn.btn-sm.btn-secondary.ml-1((click)="removeLabel(label)", *ngIf="label.mode == 0")
+                                            i.fa-solid.fa-xmark
+                            .work-body
+                                ng-container(*ngIf="label.issues.length == 0")
+                                    a.btn.btn-secondary.btn-block.mt-3((click)="addIssue(label)", *ngIf="!readOnly")
+                                        i.fa-solid.fa-plus
+
+                                .issue-container([sortablejs]="label.issues", [sortablejsOptions]="config.issueSorted")
+                                    ng-container(*ngFor="let issue_id of label.issues")
+                                        .issue-item((click)="openIssue(issue_id)", [class.is-loaded]="isLoadedIssue(issue_id)", *ngIf="onProcessIssue(cache.issues[issue_id])")
+                                            wiz-portal-works-widget-project-issueboard-issue([issue]="cache.issues[issue_id]")      
+
+                                .mt-4.mb-4.text-center(*ngIf="label.issues.length > 0")
+                                    span.text-muted.cursor-pointer((click)="addIssue(label)", *ngIf="!readOnly") 새로운 이슈 만들기
+                                
+                                .d-flex.text-muted.mr-2.ml-2.pt-3.pb-3.cursor-pointer(*ngIf="label.closeCount > 0", (click)="loadClosed(label, true)")
+                                    span 종료된 작업
+                                    span.ml-2 ({{label.closeCount}})
+                                    .ml-auto
+                                    i.fa-solid.fa-chevron-up(*ngIf="hiddenIssues(label.id, 'close').length == 0")
+                                    i.fa-solid.fa-chevron-down(*ngIf="hiddenIssues(label.id, 'close').length > 0")
+
+                                .issue-closed-items(*ngIf="hiddenIssues(label.id, 'close').length > 0")
+                                    ng-container(*ngFor="let issue_id of hiddenIssues(label.id, 'close')")
+                                        .issue-item((click)="openIssue(issue_id)", [class.is-loaded]="isLoadedIssue(issue_id)", *ngIf="!cache.issues[issue_id] || cache.issues[issue_id].status == 'close'")
+                                            wiz-portal-works-widget-project-issueboard-issue([issue]="cache.issues[issue_id]")
+                                
+                                .mt-4.mb-4.text-center(*ngIf="!hiddenIssues(label.id, 'close', true).isLastPage && hiddenIssues(label.id, 'close').length > 0")
+                                    span.text-muted.cursor-pointer((click)="loadClosed(label)") 더 불러오기
+
+                                .d-flex.text-muted.mr-2.ml-2.pt-3.pb-3.cursor-pointer(*ngIf="label.cancelCount > 0", (click)="loadCanceled(label, true)")
+                                    span 취소된 작업
+                                    span.ml-2 ({{label.cancelCount}})
+                                    .ml-auto
+                                    i.fa-solid.fa-chevron-up(*ngIf="hiddenIssues(label.id, 'cancel').length == 0")
+                                    i.fa-solid.fa-chevron-down(*ngIf="hiddenIssues(label.id, 'cancel').length > 0")
+                                
+                                .issue-closed-items(*ngIf="hiddenIssues(label.id, 'cancel').length > 0")
+                                    ng-container(*ngFor="let issue_id of hiddenIssues(label.id, 'cancel')")
+                                        .issue-item((click)="openIssue(issue_id)", [class.is-loaded]="isLoadedIssue(issue_id)", *ngIf="!cache.issues[issue_id] || cache.issues[issue_id].status == 'cancel'")
+                                            wiz-portal-works-widget-project-issueboard-issue([issue]="cache.issues[issue_id]")
+                                
+                                .mt-4.mb-4.text-center(*ngIf="!hiddenIssues(label.id, 'cancel', true).isLastPage && hiddenIssues(label.id, 'cancel').length > 0")
+                                    span.text-muted.cursor-pointer((click)="loadCanceled(label)") 더 불러오기
+
+                                .mt-6
+
+                .work-group(*ngIf="project.accessLevel(['admin', 'manager'])")
+                    .work-content
+                        .work-header
+                            input.form-control.form-control-flush(placeholder="라벨명을 입력해주세요", [(ngModel)]="cache.label", (keyup.enter)="addLabel(cache.label)")
+                            .ml-auto
+                                .btn.btn-sm.btn-blue.pr-3.pl-3((click)="addLabel(cache.label)")
+                                    i.fa-solid.fa-plus
+
+    .scroll-left((click)="scroll('left')")
+        i.ti.ti-chevron-left
+
+    .scroll-right((click)="scroll('right')")
+        i.ti.ti-chevron-right
+
+ng-container(*ngIf="issue.modal > 0")
+    wiz-portal-works-project-issueboard-issue([issue]="issue")

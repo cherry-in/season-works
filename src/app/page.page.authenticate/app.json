@@ -1,0 +1,22 @@
+{
+    "mode": "page",
+    "id": "page.page.authenticate",
+    "title": "/authenticate",
+    "namespace": "page.authenticate",
+    "viewuri": "/authenticate",
+    "category": "auth",
+    "preview": "/authenticate",
+    "ng.build": {
+        "id": "page.page.authenticate",
+        "name": "PagePageAuthenticateComponent",
+        "path": "./page.page.authenticate/page.page.authenticate.component"
+    },
+    "ng": {
+        "selector": "wiz-page-page-authenticate",
+        "inputs": [],
+        "outputs": []
+    },
+    "template": "wiz-page-page-authenticate()",
+    "controller": "base",
+    "layout": "layout.empty"
+}

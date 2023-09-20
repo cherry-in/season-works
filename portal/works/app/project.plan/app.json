@@ -1,0 +1,21 @@
+{
+    "mode": "portal",
+    "id": "project.plan",
+    "title": "project/plan",
+    "namespace": "project.plan",
+    "viewuri": "",
+    "category": "project",
+    "controller": "base",
+    "type": "app",
+    "template": "wiz-portal-works-project-plan()",
+    "ng.build": {
+        "id": "portal.works.project.plan",
+        "name": "PortalWorksProjectPlanComponent",
+        "path": "./portal.works.project.plan/portal.works.project.plan.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-works-project-plan",
+        "inputs": [],
+        "outputs": []
+    }
+}

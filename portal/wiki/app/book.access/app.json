@@ -1,0 +1,21 @@
+{
+    "mode": "portal",
+    "type": "app",
+    "id": "book.access",
+    "title": "book/access",
+    "namespace": "book.access",
+    "viewuri": "",
+    "category": "book",
+    "controller": "base",
+    "template": "wiz-portal-wiki-book-access()",
+    "ng.build": {
+        "id": "portal.wiki.book.access",
+        "name": "PortalWikiBookAccessComponent",
+        "path": "./portal.wiki.book.access/portal.wiki.book.access.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-wiki-book-access",
+        "inputs": [],
+        "outputs": []
+    }
+}

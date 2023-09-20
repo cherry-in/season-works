@@ -1,0 +1,21 @@
+{
+    "mode": "portal",
+    "type": "app",
+    "id": "book.content",
+    "title": "book/content",
+    "namespace": "book.content",
+    "viewuri": "",
+    "category": "wiki",
+    "controller": "base",
+    "template": "wiz-portal-wiki-book-content()",
+    "ng.build": {
+        "id": "portal.wiki.book.content",
+        "name": "PortalWikiBookContentComponent",
+        "path": "./portal.wiki.book.content/portal.wiki.book.content.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-wiki-book-content",
+        "inputs": [],
+        "outputs": []
+    }
+}

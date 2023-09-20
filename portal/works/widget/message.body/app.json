@@ -1,0 +1,26 @@
+{
+    "mode": "portal",
+    "type": "widget",
+    "id": "message.body",
+    "title": "Message Body",
+    "namespace": "message.body",
+    "viewuri": "",
+    "category": "message",
+    "controller": "",
+    "ng.build": {
+        "id": "portal.works.message.body",
+        "name": "PortalWorksMessageBodyComponent",
+        "path": "./portal.works.message.body/portal.works.message.body.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-works-message-body",
+        "inputs": [
+            "cache",
+            "event",
+            "project",
+            "msg"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-portal-works-message-body([cache]=\"\", [event]=\"\", [project]=\"\", [msg]=\"\")"
+}

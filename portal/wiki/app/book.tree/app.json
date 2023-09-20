@@ -1,0 +1,21 @@
+{
+    "mode": "portal",
+    "type": "app",
+    "id": "book.tree",
+    "title": "book/tree",
+    "namespace": "book.tree",
+    "viewuri": "",
+    "category": "wiki",
+    "controller": "base",
+    "template": "wiz-portal-wiki-book-tree()",
+    "ng.build": {
+        "id": "portal.wiki.book.tree",
+        "name": "PortalWikiBookTreeComponent",
+        "path": "./portal.wiki.book.tree/portal.wiki.book.tree.component"
+    },
+    "ng": {
+        "selector": "wiz-portal-wiki-book-tree",
+        "inputs": [],
+        "outputs": []
+    }
+}
